@@ -1,29 +1,5 @@
-﻿'This software is available under the following license:
-'MIT/X11 License
-'
-'Copyright (c) 2021 Erik Witte
-'
-'Permission is hereby granted, free of charge, to any person obtaining a copy
-'of this software and associated documentation files (the ''Software''), to deal
-'in the Software without restriction, including without limitation the rights
-'to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-'copies of the Software, and to permit persons to whom the Software is
-'furnished to do so, subject to the following conditions:
-'
-'The above copyright notice and this permission notice shall be included in all
-'copies or substantial portions of the Software.
-'
-'THE SOFTWARE IS PROVIDED ''AS IS'', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-'IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-'FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-'AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-'LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-'OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-'SOFTWARE.
-
+﻿
 Imports System.IO
-Imports System.Windows.Forms
-
 
 Public Enum PhonotacticTransitionDataDirections
     CreateTransitionMatrix
@@ -869,17 +845,16 @@ Public Class PhonoTactics
     ''' </summary>
     Private Sub SortProbabilityData()
 
-            'Sorting transition phonemes according to their transitional probability (source phonemes are already sorted as they are in a SortedList)
-            Dim MySortOrder As SortOrder = SortOrder.Descending
-            For Each item_level_A In TransitionalProbabilities
-                For Each item_level_B In item_level_A.Value
-                    For Each item_level_C In item_level_B.Value
-                        item_level_C.Value.SortOutputData()
-                    Next
+        'Sorting transition phonemes according to their transitional probability (source phonemes are already sorted as they are in a SortedList)
+        For Each item_level_A In TransitionalProbabilities
+            For Each item_level_B In item_level_A.Value
+                For Each item_level_C In item_level_B.Value
+                    item_level_C.Value.SortOutputData()
                 Next
             Next
+        Next
 
-        End Sub
+    End Sub
 
 
         Public Enum SyllableParts
@@ -1637,13 +1612,12 @@ Public Class PhonoTactics
         ''' </summary>
         Private Sub SortProbabilityData()
 
-            'Sorting transition phonemes according to their transitional probability (source phonemes are already sorted as they are in a SortedList)
-            Dim MySortOrder As SortOrder = SortOrder.Descending
-            For Each StartPosition In TransitionalProbabilities
-                StartPosition.Value.SortOutputData()
-            Next
+        'Sorting transition phonemes according to their transitional probability (source phonemes are already sorted as they are in a SortedList)
+        For Each StartPosition In TransitionalProbabilities
+            StartPosition.Value.SortOutputData()
+        Next
 
-        End Sub
+    End Sub
 
         Private Class PhonoTacticProbabilities
             Inherits Dictionary(Of Integer, PhonemeData) 'Holding the phoneme combination start index, and a list of phonemes/phoneme combinations starting on that index

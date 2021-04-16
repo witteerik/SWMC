@@ -1,30 +1,6 @@
-﻿'This software is available under the following license:
-'MIT/X11 License
-'
-'Copyright (c) 2021 Erik Witte
-'
-'Permission is hereby granted, free of charge, to any person obtaining a copy
-'of this software and associated documentation files (the ''Software''), to deal
-'in the Software without restriction, including without limitation the rights
-'to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-'copies of the Software, and to permit persons to whom the Software is
-'furnished to do so, subject to the following conditions:
-'
-'The above copyright notice and this permission notice shall be included in all
-'copies or substantial portions of the Software.
-'
-'THE SOFTWARE IS PROVIDED ''AS IS'', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-'IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-'FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-'AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-'LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-'OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-'SOFTWARE.
-
-Imports System.Data.OleDb
+﻿Imports System.Data.OleDb
 Imports System.IO
 Imports MySql.Data.MySqlClient
-
 
 Public Class WordMetricsCalculation
 
@@ -67,7 +43,7 @@ Public Class WordMetricsCalculation
 
     ''' <summary>
     ''' Calculates the selected word metrics from a string array of orthographic words, or orthographic word and phonetic transcriptions. 
-    ''' If a phonetic transcription is not supplied an attempt is made at getting the corresponding ARC list phonetic transcription/s.
+    ''' If a phonetic transcription is not supplied an attempt is made at getting the corresponding AFC list phonetic transcription/s.
     ''' </summary>
     ''' <param name="InputWords"></param>
     ''' <param name="CalculateOrthographicTransparency"></param>
@@ -319,7 +295,7 @@ Public Class WordMetricsCalculation
 
         Next
 
-        'Looking up all available data in the ARC list, filling up data that hasn't been added by the user
+        'Looking up all available data in the AFC list, filling up data that hasn't been added by the user
         If DoAfcListLookup Then
             NewWordGroup = AfcListLookup(NewWordGroup, FatalErrorDescription, UseLocalAccdb, AccdbFileFolder, AccdbFileName)
             If NewWordGroup Is Nothing Then Return Nothing
@@ -586,7 +562,7 @@ Public Class WordMetricsCalculation
                     Return False
                 End If
 
-                'Adding words lacking in the ARC-list to the present comparison corpus.
+                'Adding words lacking in the AFC-list to the present comparison corpus.
                 If AddInputWordsToComparisonLists = True Then
 
                     'Dim NewWordsAddedByUser As New List(Of WordLists.Word)
@@ -667,7 +643,7 @@ Public Class WordMetricsCalculation
 
             If AddInputWordsToComparisonLists = True Then
 
-                'Adding words lacking in the ARC-list to the present comparison corpus.
+                'Adding words lacking in the AFC-list to the present comparison corpus.
                 If AddInputWordsToComparisonLists = True Then
 
                     'Dim NewWordsAddedByUser As New List(Of WordLists.Word)
@@ -720,10 +696,10 @@ Public Class WordMetricsCalculation
     End Function
 
     ''' <summary>
-    ''' Fills up the output word group with all available data from the ARC list. 
-    ''' For input words that contain only spelling, all ARC list words with that spelling are added.
-    ''' For input words with both a spelling and a transcription specified, only data from ARC list words with exact matches in spelling and transcriptions are added.
-    ''' User supplied ZipfValues are only used in cases when the input word does not exist in the ARC list.
+    ''' Fills up the output word group with all available data from the AFC list. 
+    ''' For input words that contain only spelling, all AFC list words with that spelling are added.
+    ''' For input words with both a spelling and a transcription specified, only data from AFC list words with exact matches in spelling and transcriptions are added.
+    ''' User supplied ZipfValues are only used in cases when the input word does not exist in the AFC list.
     ''' </summary>
     ''' <param name="InputWordGroup"></param>
     ''' <param name="FatalErrorDescription"></param>
@@ -753,7 +729,7 @@ Public Class WordMetricsCalculation
 
 
             If AfcListConnection Is Nothing Then
-                FatalErrorDescription = "Unable to establish a connection with the ARC-list database."
+                FatalErrorDescription = "Unable to establish a connection with the AFC-list database."
                 Return Nothing
             End If
 
@@ -812,7 +788,7 @@ Public Class WordMetricsCalculation
 
 
                 If CurrentWordsTable.Rows.Count = 0 Then
-                    'The input word was lacking in the Arc list. Adds the input word without any added Arc list data.
+                    'The input word was lacking in the AFC list. Adds the input word without any added AFC list data.
                     OutputWordGroup.MemberWords.Add(CurrentInputWord)
 
                     'Marks the word as lacking word list data (some columns will be blank in the website output)
@@ -865,7 +841,7 @@ Public Class WordMetricsCalculation
                             NewWord.DetermineSyllableOpenness()  'Detecting syllable openness
 
                             If ContainsInvalidPhoneticCharacter = True Or CorrectedDoubleSpacesInPhoneticForm = True Then 'Or TotalErrors > 0 Then
-                                FatalErrorDescription = "Incorrect transcription detected in the ARC-list!"
+                                FatalErrorDescription = "Incorrect transcription detected in the AFC-list!"
                                 Return Nothing
                             End If
 
@@ -954,7 +930,7 @@ Public Class WordMetricsCalculation
                         NewWord.ForeignWord = CurrentWordsTable(n)("ForeignWord")
                         NewWord.ZipfValue_Word = CurrentWordsTable(n)("ZipfValue")
 
-                        'Acctually some ARC-list columns are not read here. However, that data is (or could be) generated from the columns read.
+                        'Acctually some AFC-list columns are not read here. However, that data is (or could be) generated from the columns read.
 
                         'Adding the word
                         OutputWordGroup.MemberWords.Add(NewWord)
@@ -985,7 +961,7 @@ Public Class WordMetricsCalculation
 
         For word = 0 To InputWordGroup.MemberWords.Count - 1
 
-            'Skips if the word has Arc-list data
+            'Skips if the word has AFC-list data
             If InputWordGroup.MemberWords(word).ContainsWordListData = True Then Continue For
 
             'Skips to next if there is no phonetic form
@@ -1010,7 +986,7 @@ Public Class WordMetricsCalculation
         End If
 
         If AfcListConnection Is Nothing Then
-            FatalErrorDescription = "Unable to establish a connection with the ARC-list database."
+            FatalErrorDescription = "Unable to establish a connection with the AFC-list database."
             Exit Sub
         End If
 
@@ -1024,7 +1000,7 @@ Public Class WordMetricsCalculation
 
         For word = 0 To InputWordGroup.MemberWords.Count - 1
 
-            'Skips if the word has Arc-list data
+            'Skips if the word has AFC-list data
             If InputWordGroup.MemberWords(word).ContainsWordListData = True Then Continue For
 
             'Skips to next if there is no phonetic form
@@ -1035,13 +1011,13 @@ Public Class WordMetricsCalculation
             InputWordGroup.MemberWords(word).SetWordPhonotacticType()
 
 
-            'N.B. Only homographs and homophones already present in the ARC-list will be detected for any new word. Homographs and homophones that exist among other new words will not be detected.
-            'New words will however not be added as homographs to the ARC-list words
+            'N.B. Only homographs and homophones already present in the AFC-list will be detected for any new word. Homographs and homophones that exist among other new words will not be detected.
+            'New words will however not be added as homographs to the AFC-list words
 
             'Gets homographs
             Dim AfcListDataAdapter As Object
 
-            'Getting a list of ARC-list words with the same spelling
+            'Getting a list of AFC-list words with the same spelling
             Dim Query As String = "SELECT * FROM " & AfcListTableName & vbCr & vbLf &
                     "WHERE OrthographicForm='" & InputWordGroup.MemberWords(word).OrthographicForm & "';"
 
@@ -1076,7 +1052,7 @@ Public Class WordMetricsCalculation
 
             'Determines homophones
 
-            'Getting a list of ARC-list words with the same ReducedTranscription
+            'Getting a list of AFC-list words with the same ReducedTranscription
             Query = "SELECT * FROM " & AfcListTableName & vbCr & vbLf &
                     "WHERE ReducedTranscription='" & ReducedTranscription & "';"
 

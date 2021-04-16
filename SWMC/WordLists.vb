@@ -1,30 +1,6 @@
-﻿'This software is available under the following license:
-'MIT/X11 License
-'
-'Copyright (c) 2021 Erik Witte
-'
-'Permission is hereby granted, free of charge, to any person obtaining a copy
-'of this software and associated documentation files (the ''Software''), to deal
-'in the Software without restriction, including without limitation the rights
-'to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-'copies of the Software, and to permit persons to whom the Software is
-'furnished to do so, subject to the following conditions:
-'
-'The above copyright notice and this permission notice shall be included in all
-'copies or substantial portions of the Software.
-'
-'THE SOFTWARE IS PROVIDED ''AS IS'', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-'IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-'FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-'AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-'LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-'OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-'SOFTWARE.
-
-Imports System.IO
+﻿Imports System.IO
 Imports System.Runtime.Serialization.Formatters.Binary
 Imports System.Reflection
-
 
 
 Public Enum WordRange
@@ -1933,12 +1909,12 @@ Public Class WordGroup
                                                       Optional ByVal ComparisonCorpuTotalWordTypeCount As Integer = 3591552,
                                                        Optional ByVal ErrorString As String = "",
                                                        Optional ByVal CalculatePLDx As Boolean = True,
-                                                       Optional ByVal MinimumWordCount As Integer = 20) 'Optional values based on the ARC-list word frequency data corpus size
+                                                       Optional ByVal MinimumWordCount As Integer = 20) 'Optional values based on the AFC-list word frequency data corpus size
 
 
         SendInfoToLog("Initializing method: " & System.Reflection.MethodInfo.GetCurrentMethod.Name)
 
-        'Setting up a connection to the ARC-list database
+        'Setting up a connection to the AFC-list database
         'Dim AfcListConnection = New MySql.Data.MySqlClient.MySqlConnection(AfcListMySqlConnectionString)
 
         'Recreating the PLD1 transcriptions, and put them in CurrentWord.TranscriptionString 
@@ -2091,9 +2067,8 @@ Public Class WordGroup
         'Logging initialization
         If IsRunOnServer = False Then SendInfoToLog("Initializing calculation of LevenshteinDistances of type: ")
 
-        Dim ProgressForm As ProgressDisplay = Nothing
+        Dim ProgressForm As New ProgressDisplay
         If IsRunOnServer = False Then
-            ProgressForm = New ProgressDisplay
             ProgressForm.Initialize(MemberWords.Count - 1,, "Calculating OLD")
             ProgressForm.Show()
         End If
@@ -2251,9 +2226,8 @@ Public Class WordGroup
             Dim PhoneticIsolationPointCalculator As New PhoneticIsolationPoints(ComparisonCorpus)
 
             'Starting a progress window
-            Dim myProgress As ProgressDisplay = Nothing
+            Dim myProgress As New ProgressDisplay
             If ShowProgressWindow = True Then
-                myProgress = New ProgressDisplay
                 myProgress.Initialize(MemberWords.Count - 1, 0, "Calculating phonetic isolation points...", 1)
                 myProgress.Show()
             End If
@@ -2302,9 +2276,8 @@ Public Class WordGroup
 
 
             'Starting a progress window
-            Dim myProgress As ProgressDisplay = Nothing
+            Dim myProgress As New ProgressDisplay
             If IsRunOnServer = False Then
-                myProgress = New ProgressDisplay
                 myProgress.Initialize(MemberWords.Count - 1, 0, "Calculating phonetic isolation points...", 1)
                 myProgress.Show()
             End If
@@ -8149,7 +8122,7 @@ Public Class Word
 
 
     ''' <summary>
-    ''' Detects the highest number of (unparsed) charachters in each ARC-list column.
+    ''' Detects the highest number of (unparsed) charachters in each AFC-list column.
     ''' </summary>
     ''' <param name="inputWordStringSplit"></param>
     ''' <param name="ColumnOrder"></param>
