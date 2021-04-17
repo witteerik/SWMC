@@ -9,7 +9,8 @@ Module Program
         'Creates an array of (lower case) words for which to calculate word metrics
         Dim InputWords As String() = {"hej", "du"}
 
-        Dim testLookUp = SWMC_MP.AfcListSearch.SearchAfcList("SELECT * FROM AfcList WHERE OrthographicForm LIKE 'hej';")
+        Dim Hits As Integer = 0
+        Dim testLookUp = SWMC_MP.AfcListSearch.SearchAfcList("SELECT * FROM AfcList WHERE OrthographicForm LIKE 'hej';", Hits)
 
         'Calculates the word metrics of the input words
         Dim Output = MWC.CalculateWordMetrics(InputWords)

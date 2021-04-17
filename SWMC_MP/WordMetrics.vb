@@ -1030,7 +1030,11 @@ End Class
 
 Public Module AfcListSearch
 
-    Public Function SearchAfcList(ByVal SqlQuery As String, Optional ByRef FatalErrorDescription As String = "") As List(Of TextOnlyWord)
+    Public Function SearchAfcList(ByVal SqlQuery As String,
+                                  ByRef TotalNumberOfHits As Integer,
+                                  Optional ByRef FatalErrorDescription As String = "",
+                                  ByVal Optional IndexOfFirstHit As Integer = 0,
+                                  ByVal Optional MaxNumberOfHits As Integer = Integer.MaxValue) As List(Of TextOnlyWord)
 
         Try
 
@@ -1054,30 +1058,102 @@ Public Module AfcListSearch
             Dim CurrentWordsTable As New DataTable
             AfcListDataAdapter.Fill(CurrentWordsTable)
 
+            'String the total number of hits
+            TotalNumberOfHits = CurrentWordsTable.Rows.Count
+
             Dim OutputList = New List(Of TextOnlyWord)
 
-            'Adds the words found in the AfcList look-up
-            For n = 0 To CurrentWordsTable.Rows.Count - 1
+            Dim TempStartIndex As Integer = IndexOfFirstHit
+            If TempStartIndex < 0 Then TempStartIndex = 0
+
+            Dim TempLastIndex As Integer = TempStartIndex + MaxNumberOfHits - 1
+            TempLastIndex = Math.Min(TempLastIndex, CurrentWordsTable.Rows.Count - TempStartIndex - 1)
+
+            'Adds the words found in the AfcList look-up (limited to the selected index range)
+            For n = TempStartIndex To TempLastIndex
+
+                'For c = 0 To CurrentWordsTable.Columns.Count - 1
+                '    Console.WriteLine(CurrentWordsTable.Columns(c).ColumnName)
+                'Next
 
                 'Creating a new TextOnlyWord
                 Dim NewTextOnlyWord As New TextOnlyWord
 
-                'Getting all properties of a TextOnlyWord
-                Dim PropNameList As New List(Of String)
-                Dim AfcListProperyInfo() As System.Reflection.PropertyInfo = TextOnlyWord.AfcListColumnNamesProperties
-                For Each pi In AfcListProperyInfo
-                    Try
-                        Select Case pi.Name
-                            Case "Id"
-                                GetType(TextOnlyWord).GetProperty(pi.Name).SetValue(NewTextOnlyWord, CurrentWordsTable(n)(pi.Name))
-                            Case Else
-                                GetType(TextOnlyWord).GetProperty(pi.Name).SetValue(NewTextOnlyWord, CurrentWordsTable(n)(pi.Name).ToString)
-                        End Select
-                    Catch ex As Exception
-                        Console.WriteLine(pi.Name)
-                    End Try
+                Dim CurrentRow = CurrentWordsTable(n)
 
-                Next
+                Try
+
+                    '(Since the incoming AFC-list column order is fixed, the copying can be hard coded here.) (However, we need to check for dBNull, but perhaps not for all AFC-list columns)
+                    Integer.TryParse(CurrentRow.ItemArray(0), NewTextOnlyWord.Id)
+                    If Not IsDBNull(CurrentRow.ItemArray(0)) Then NewTextOnlyWord.Id = CurrentRow.ItemArray(0)
+                    If Not IsDBNull(CurrentRow.ItemArray(1)) Then NewTextOnlyWord.OrthographicForm = CurrentRow.ItemArray(1)
+                    If Not IsDBNull(CurrentRow.ItemArray(2)) Then NewTextOnlyWord.GIL2P_OT_Average = CurrentRow.ItemArray(2)
+                    If Not IsDBNull(CurrentRow.ItemArray(3)) Then NewTextOnlyWord.GIL2P_OT_Min = CurrentRow.ItemArray(3)
+                    If Not IsDBNull(CurrentRow.ItemArray(4)) Then NewTextOnlyWord.PIP2G_OT_Average = CurrentRow.ItemArray(4)
+                    If Not IsDBNull(CurrentRow.ItemArray(5)) Then NewTextOnlyWord.PIP2G_OT_Min = CurrentRow.ItemArray(5)
+                    If Not IsDBNull(CurrentRow.ItemArray(6)) Then NewTextOnlyWord.G2P_OT_Average = CurrentRow.ItemArray(6)
+                    If Not IsDBNull(CurrentRow.ItemArray(7)) Then NewTextOnlyWord.UpperCase = CurrentRow.ItemArray(7)
+                    If Not IsDBNull(CurrentRow.ItemArray(8)) Then NewTextOnlyWord.Homographs = CurrentRow.ItemArray(8)
+                    If Not IsDBNull(CurrentRow.ItemArray(9)) Then NewTextOnlyWord.HomographCount = CurrentRow.ItemArray(9)
+                    If Not IsDBNull(CurrentRow.ItemArray(10)) Then NewTextOnlyWord.SpecialCharacter = CurrentRow.ItemArray(10)
+                    If Not IsDBNull(CurrentRow.ItemArray(11)) Then NewTextOnlyWord.RawWordTypeFrequency = CurrentRow.ItemArray(11)
+                    If Not IsDBNull(CurrentRow.ItemArray(12)) Then NewTextOnlyWord.RawDocumentCount = CurrentRow.ItemArray(12)
+                    If Not IsDBNull(CurrentRow.ItemArray(13)) Then NewTextOnlyWord.PhoneticForm = CurrentRow.ItemArray(13)
+                    If Not IsDBNull(CurrentRow.ItemArray(14)) Then NewTextOnlyWord.ReducedTranscription = CurrentRow.ItemArray(14)
+                    If Not IsDBNull(CurrentRow.ItemArray(15)) Then NewTextOnlyWord.PhonotacticType = CurrentRow.ItemArray(15)
+                    If Not IsDBNull(CurrentRow.ItemArray(16)) Then NewTextOnlyWord.SSPP_Average = CurrentRow.ItemArray(16)
+                    If Not IsDBNull(CurrentRow.ItemArray(17)) Then NewTextOnlyWord.SSPP_Min = CurrentRow.ItemArray(17)
+                    If Not IsDBNull(CurrentRow.ItemArray(18)) Then NewTextOnlyWord.PSP_Sum = CurrentRow.ItemArray(18)
+                    If Not IsDBNull(CurrentRow.ItemArray(19)) Then NewTextOnlyWord.PSBP_Sum = CurrentRow.ItemArray(19)
+                    If Not IsDBNull(CurrentRow.ItemArray(20)) Then NewTextOnlyWord.S_PSP_Average = CurrentRow.ItemArray(20)
+                    If Not IsDBNull(CurrentRow.ItemArray(21)) Then NewTextOnlyWord.S_PSBP_Average = CurrentRow.ItemArray(21)
+                    If Not IsDBNull(CurrentRow.ItemArray(22)) Then NewTextOnlyWord.Homophones = CurrentRow.ItemArray(22)
+                    If Not IsDBNull(CurrentRow.ItemArray(23)) Then NewTextOnlyWord.HomophoneCount = CurrentRow.ItemArray(23)
+                    If Not IsDBNull(CurrentRow.ItemArray(24)) Then NewTextOnlyWord.PNDP = CurrentRow.ItemArray(24)
+                    If Not IsDBNull(CurrentRow.ItemArray(25)) Then NewTextOnlyWord.ONDP = CurrentRow.ItemArray(25)
+                    If Not IsDBNull(CurrentRow.ItemArray(26)) Then NewTextOnlyWord.Sonographs = CurrentRow.ItemArray(26)
+                    If Not IsDBNull(CurrentRow.ItemArray(27)) Then NewTextOnlyWord.AllPoS = CurrentRow.ItemArray(27)
+                    If Not IsDBNull(CurrentRow.ItemArray(28)) Then NewTextOnlyWord.AllLemmas = CurrentRow.ItemArray(28)
+                    If Not IsDBNull(CurrentRow.ItemArray(29)) Then NewTextOnlyWord.NumberOfSenses = CurrentRow.ItemArray(29)
+                    If Not IsDBNull(CurrentRow.ItemArray(30)) Then NewTextOnlyWord.Abbreviation = CurrentRow.ItemArray(30)
+                    If Not IsDBNull(CurrentRow.ItemArray(31)) Then NewTextOnlyWord.Acronym = CurrentRow.ItemArray(31)
+                    If Not IsDBNull(CurrentRow.ItemArray(32)) Then NewTextOnlyWord.ForeignWord = CurrentRow.ItemArray(32)
+                    If Not IsDBNull(CurrentRow.ItemArray(33)) Then NewTextOnlyWord.ZipfValue = CurrentRow.ItemArray(33)
+                    If Not IsDBNull(CurrentRow.ItemArray(34)) Then NewTextOnlyWord.LetterCount = CurrentRow.ItemArray(34)
+                    If Not IsDBNull(CurrentRow.ItemArray(35)) Then NewTextOnlyWord.GraphemeCount = CurrentRow.ItemArray(35)
+                    If Not IsDBNull(CurrentRow.ItemArray(36)) Then NewTextOnlyWord.DiGraphCount = CurrentRow.ItemArray(36)
+                    If Not IsDBNull(CurrentRow.ItemArray(37)) Then NewTextOnlyWord.TriGraphCount = CurrentRow.ItemArray(37)
+                    If Not IsDBNull(CurrentRow.ItemArray(38)) Then NewTextOnlyWord.LongGraphemesCount = CurrentRow.ItemArray(38)
+                    If Not IsDBNull(CurrentRow.ItemArray(39)) Then NewTextOnlyWord.SyllableCount = CurrentRow.ItemArray(39)
+                    If Not IsDBNull(CurrentRow.ItemArray(40)) Then NewTextOnlyWord.Tone = CurrentRow.ItemArray(40)
+                    If Not IsDBNull(CurrentRow.ItemArray(41)) Then NewTextOnlyWord.MainStressSyllable = CurrentRow.ItemArray(41)
+                    If Not IsDBNull(CurrentRow.ItemArray(42)) Then NewTextOnlyWord.SecondaryStressSyllable = CurrentRow.ItemArray(42)
+                    If Not IsDBNull(CurrentRow.ItemArray(43)) Then NewTextOnlyWord.PhoneCount = CurrentRow.ItemArray(43)
+                    If Not IsDBNull(CurrentRow.ItemArray(44)) Then NewTextOnlyWord.PLD1WordCount = CurrentRow.ItemArray(44)
+                    If Not IsDBNull(CurrentRow.ItemArray(45)) Then NewTextOnlyWord.OLD1WordCount = CurrentRow.ItemArray(45)
+                    If Not IsDBNull(CurrentRow.ItemArray(46)) Then NewTextOnlyWord.PossiblePoSCount = CurrentRow.ItemArray(46)
+                    If Not IsDBNull(CurrentRow.ItemArray(47)) Then NewTextOnlyWord.PossibleLemmaCount = CurrentRow.ItemArray(47)
+
+                Catch ex As Exception
+                    Console.WriteLine(ex.ToString)
+                End Try
+
+                ''Or else reflection could be used to set values as below (which is probably slower, but I havn't tested it...)
+                ''Getting all properties of a TextOnlyWord 
+                'Dim PropNameList As New List(Of String)
+                'Dim AfcListProperyInfo() As System.Reflection.PropertyInfo = TextOnlyWord.AfcListColumnNamesProperties
+                'For Each pi In AfcListProperyInfo
+                '    Try
+                '        Select Case pi.Name
+                '            Case "Id"
+                '                GetType(TextOnlyWord).GetProperty(pi.Name).SetValue(NewTextOnlyWord, CurrentWordsTable(n)(pi.Name))
+                '            Case Else
+                '                GetType(TextOnlyWord).GetProperty(pi.Name).SetValue(NewTextOnlyWord, CurrentWordsTable(n)(pi.Name).ToString)
+                '        End Select
+                '    Catch ex As Exception
+                '        Console.WriteLine(pi.Name)
+                '    End Try
+                'Next
 
                 OutputList.Add(NewTextOnlyWord)
 

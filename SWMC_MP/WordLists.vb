@@ -8216,6 +8216,9 @@ Public Class Word
         Next
         'N.B. Note that it is not necessary to include all properties here. Some may be skipped to recude the workload.
 
+        'Removing the Id column from being copied (as Word do not have this property)
+        PropNameList.Remove("Id")
+
         'Creating a new TextOnlyWord
         Dim ReadOnlyWord As New TextOnlyWord
 
