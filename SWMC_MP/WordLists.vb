@@ -8257,93 +8257,91 @@ Public Class Word
             CurrentPhoneCount = CountPhonemes(False)
         End If
 
-        Dim outputString As String = ""
-
         Select Case PropertyName
 
             Case "OrthographicForm"
-                outputString &= OrthographicForm
+                Return OrthographicForm
 
             Case "GIL2P_OT_Average"
 
                 If CurrentPhoneCount > 0 Or AllowIrrelevantValues = True Then
-                    outputString &= Rounding(GIL2P_OT_Average, , RoundingDecimals)
+                    Return Rounding(GIL2P_OT_Average, , RoundingDecimals)
                 End If
 
             Case "GIL2P_OT_Min"
 
                 If CurrentPhoneCount > 0 Or AllowIrrelevantValues = True Then
-                    outputString &= Rounding(GIL2P_OT_Min, , RoundingDecimals)
+                    Return Rounding(GIL2P_OT_Min, , RoundingDecimals)
                 End If
 
             Case "PIP2G_OT_Average"
 
                 If CurrentPhoneCount > 0 Or AllowIrrelevantValues = True Then
-                    outputString &= Rounding(PIP2G_OT_Average, , RoundingDecimals)
+                    Return Rounding(PIP2G_OT_Average, , RoundingDecimals)
                 End If
 
             Case "PIP2G_OT_Min"
 
                 If CurrentPhoneCount > 0 Or AllowIrrelevantValues = True Then
-                    outputString &= Rounding(PIP2G_OT_Min, , RoundingDecimals)
+                    Return Rounding(PIP2G_OT_Min, , RoundingDecimals)
                 End If
 
             Case "G2P_OT_Average"
 
                 If CurrentPhoneCount > 0 Or AllowIrrelevantValues = True Then
-                    outputString &= Rounding(G2P_OT_Average,, RoundingDecimals)
+                    Return Rounding(G2P_OT_Average,, RoundingDecimals)
                 End If
 
             Case "UpperCase"
 
                 If ContainsWordListData = True Then
-                    outputString &= Rounding(ProportionStartingWithUpperCase,, 2)
+                    Return Rounding(ProportionStartingWithUpperCase,, 2)
                 End If
 
             Case "Homographs"
 
                 If LanguageHomographs IsNot Nothing Then
-                    outputString &= String.Join("|", LanguageHomographs)
+                    Return String.Join("|", LanguageHomographs)
                 End If
 
             Case "HomographCount"
-                outputString &= LanguageHomographCount
+                Return LanguageHomographCount
 
             Case "SpecialCharacter"
 
                 If ContainsWordListData = True Then
-                    outputString &= OrthographicFormContainsSpecialCharacter
+                    Return OrthographicFormContainsSpecialCharacter
                 Else
                     If GenerateLackingData = True Then
-                        outputString &= MarkSpecialCharacterWords_ByNormalCharList(SwedishOrthographicCharacters)
+                        Return MarkSpecialCharacterWords_ByNormalCharList(SwedishOrthographicCharacters)
                     End If
                 End If
 
             Case "RawWordTypeFrequency"
 
                 If ContainsWordListData = True Then
-                    outputString &= RawWordTypeFrequency
+                    Return RawWordTypeFrequency
                 End If
 
             Case "RawDocumentCount"
 
                 If ContainsWordListData = True Then
-                    outputString &= RawDocumentCount
+                    Return RawDocumentCount
                 End If
 
             Case "PhoneticForm"
 
                 If CurrentPhoneCount > 0 Or AllowIrrelevantValues = True Then
-                    outputString &= String.Join(" ", BuildExtendedIpaArray(False))
+                    Return String.Join(" ", BuildExtendedIpaArray(False))
                 End If
 
             Case "TemporarySyllabification"
-                outputString &= String.Join(" ", BuildExtendedIpaArray(False,,,, True))
+                Return String.Join(" ", BuildExtendedIpaArray(False,,,, True))
 
             Case "ReducedTranscription"
 
                 If CurrentPhoneCount > 0 Or AllowIrrelevantValues = True Then
-                    outputString &= String.Join(" ", BuildReducedIpaArray())
+                    Return String.Join(" ", BuildReducedIpaArray())
                 End If
 
             Case "PhonotacticType"
@@ -8351,11 +8349,11 @@ Public Class Word
 
                     'Checks if phonotactic type has been determined
                     If PhonotacticType <> "" Then
-                        outputString &= PhonotacticType
+                        Return PhonotacticType
                     Else
                         If GenerateLackingData = True Then
                             'Determines the phonotectic type
-                            outputString &= SetWordPhonotacticType()
+                            Return SetWordPhonotacticType()
                         End If
                     End If
                 End If
@@ -8363,70 +8361,69 @@ Public Class Word
             Case "SSPP_Average"
 
                 If CurrentPhoneCount > 0 Or AllowIrrelevantValues = True Then
-                    outputString &= Rounding(SSPP_Average, , RoundingDecimals)
+                    Return Rounding(SSPP_Average, , RoundingDecimals)
                 End If
 
             Case "SSPP_Min"
 
                 If CurrentPhoneCount > 0 Or AllowIrrelevantValues = True Then
-                    outputString &= Rounding(SSPP_Min,, RoundingDecimals)
+                    Return Rounding(SSPP_Min,, RoundingDecimals)
                 End If
 
             Case "PSP_Sum"
 
                 If CurrentPhoneCount > 0 Or AllowIrrelevantValues = True Then
-                    outputString &= Rounding(PSP_Sum,, RoundingDecimals)
+                    Return Rounding(PSP_Sum,, RoundingDecimals)
                 End If
 
             Case "PSBP_Sum"
 
                 If CurrentPhoneCount > 0 Or AllowIrrelevantValues = True Then
-                    outputString &= Rounding(PSBP_Sum,, RoundingDecimals)
+                    Return Rounding(PSBP_Sum,, RoundingDecimals)
                 End If
 
             Case "S_PSP_Average"
 
                 If CurrentPhoneCount > 0 Or AllowIrrelevantValues = True Then
-                    outputString &= Rounding(S_PSP_Average,, RoundingDecimals)
+                    Return Rounding(S_PSP_Average,, RoundingDecimals)
                 End If
 
             Case "S_PSBP_Average"
 
                 If CurrentPhoneCount > 0 Or AllowIrrelevantValues = True Then
-                    outputString &= Rounding(S_PSBP_Average,, RoundingDecimals)
+                    Return Rounding(S_PSBP_Average,, RoundingDecimals)
                 End If
 
             Case "Homophones"
 
                 If LanguageHomophones IsNot Nothing Then
-                    outputString &= String.Join("|", LanguageHomophones)
+                    Return String.Join("|", LanguageHomophones)
                 End If
 
             Case "HomophoneCount"
-                outputString &= LanguageHomophoneCount
+                Return LanguageHomophoneCount
 
             Case "PNDP"
 
                 If CurrentPhoneCount > 0 Or AllowIrrelevantValues = True Then
-                    outputString &= Rounding(FWPN_DensityProbability, , 3)
+                    Return Rounding(FWPN_DensityProbability, , 3)
                 End If
 
             Case "PLD1Transcriptions"
 
                 If PLD1Transcriptions.Count > 0 Then
-                    outputString &= String.Join("|", PLD1Transcriptions)
+                    Return String.Join("|", PLD1Transcriptions)
                 End If
 
             Case "ONDP"
-                outputString &= Rounding(FWON_DensityProbability, , 3)
+                Return Rounding(FWON_DensityProbability, , 3)
 
             Case "OLD1Spellings"
 
                 'Creating OLD1Spellings since they may not exist in all serialized versions...
-                If OLD1Spellings Is Nothing Then
-                    OLD1Spellings = New List(Of String)
+                If OLD1Spellings IsNot Nothing Then
                     If OLD1Spellings.Count > 0 Then
-                        outputString &= String.Join("|", OLD1Spellings)
+                        Return String.Join("|", OLD1Spellings)
                     End If
                 End If
 
@@ -8434,40 +8431,38 @@ Public Class Word
 
                 'Exporting PLDx_Average only if there exists PLDx words
                 If PLDxData.Count > 0 Then
-                    outputString &= Rounding(PLDx_Average, , RoundingDecimals)
+                    Return Rounding(PLDx_Average, , RoundingDecimals)
                 End If
 
             Case "OLDx_Average"
 
                 If OLDxData.Count > 0 Then
-                    outputString &= Rounding(OLDx_Average, , RoundingDecimals)
+                    Return Rounding(OLDx_Average, , RoundingDecimals)
                 End If
 
             Case "PLDx_Neighbors"
 
                 'Creating PLDxData since it may not exist in all serialized versions...
-                If PLDxData Is Nothing Then
-                    PLDxData = New List(Of Tuple(Of Integer, String, Single))
+                If PLDxData IsNot Nothing Then
                     If PLDxData.Count > 0 Then
                         Dim PLDxOutputList As New List(Of String)
                         For i = 0 To PLDxData.Count - 1
                             PLDxOutputList.Add(PLDxData(i).Item1 & ":" & PLDxData(i).Item2 & ":" & PLDxData(i).Item3)
                         Next
-                        outputString &= String.Join("|", PLDxOutputList)
+                        Return String.Join("|", PLDxOutputList)
                     End If
                 End If
 
             Case "OLDx_Neighbors"
 
                 'Creating OLDxData since it may not exist in all serialized versions...
-                If OLDxData Is Nothing Then
-                    OLDxData = New List(Of Tuple(Of Integer, String, Single))
+                If OLDxData IsNot Nothing Then
                     If OLDxData.Count > 0 Then
                         Dim OLDxOutputList As New List(Of String)
                         For i = 0 To OLDxData.Count - 1
                             OLDxOutputList.Add(OLDxData(i).Item1 & ":" & OLDxData(i).Item2 & ":" & OLDxData(i).Item3)
                         Next
-                        outputString &= String.Join("|", OLDxOutputList)
+                        Return String.Join("|", OLDxOutputList)
                     End If
                 End If
 
@@ -8481,7 +8476,7 @@ Public Class Word
                     Next
 
                     If LocalSonographs.Count > 0 Then
-                        outputString &= String.Join("|", LocalSonographs)
+                        Return String.Join("|", LocalSonographs)
                     End If
                 End If
 
@@ -8497,7 +8492,7 @@ Public Class Word
                     PartsOfSpeechString = PartsOfSpeechString.TrimEnd("|")
 
                     'Writing PoS string
-                    outputString &= PartsOfSpeechString
+                    Return PartsOfSpeechString
                 End If
 
             Case "AllLemmas"
@@ -8511,33 +8506,33 @@ Public Class Word
                     'Removes the last comma
                     LemmaString = LemmaString.TrimEnd("|")
                     'Writing lemma string
-                    outputString &= LemmaString
+                    Return LemmaString
                 End If
 
             Case "NumberOfSenses"
 
                 If ContainsWordListData = True Then
                     If NumberOfSenses > 0 Then
-                        outputString &= NumberOfSenses
+                        Return NumberOfSenses
                     End If
                 End If
 
             Case "Abbreviation"
 
                 If ContainsWordListData = True Then
-                    outputString &= Abbreviation
+                    Return Abbreviation
                 End If
 
             Case "Acronym"
 
                 If ContainsWordListData = True Then
-                    outputString &= Acronym
+                    Return Acronym
                 End If
 
             Case "AllPossibleSenses"
 
                 If AllPossibleSenses.Count > 0 Then
-                    outputString &= String.Join("|", AllPossibleSenses)
+                    Return String.Join("|", AllPossibleSenses)
                 End If
 
             Case "SSPP"
@@ -8562,7 +8557,7 @@ Public Class Word
                         If Not i > PP_Phonemes.Count - 1 Then
                             PhonoTacticCombination.Add("[" & PP_Phonemes(i) & "]")
                         End If
-                        outputString &= String.Join(" ", PhonoTacticCombination)
+                        Return String.Join(" ", PhonoTacticCombination)
                     End If
                 End If
 
@@ -8583,7 +8578,7 @@ Public Class Word
                             PhonoTacticCombination.Add(probString)
                             i += 1
                         Next
-                        outputString &= String.Join(" ", PhonoTacticCombination)
+                        Return String.Join(" ", PhonoTacticCombination)
                     End If
                 End If
 
@@ -8604,7 +8599,7 @@ Public Class Word
                             PhonoTacticCombination.Add(probString)
                             i += 1
                         Next
-                        outputString &= String.Join(" ", PhonoTacticCombination)
+                        Return String.Join(" ", PhonoTacticCombination)
                     End If
                 End If
 
@@ -8624,7 +8619,7 @@ Public Class Word
                             PhonoTacticCombination.Add(probString)
                             i += 1
                         Next
-                        outputString &= String.Join(" ", PhonoTacticCombination)
+                        Return String.Join(" ", PhonoTacticCombination)
                     End If
                 End If
 
@@ -8644,7 +8639,7 @@ Public Class Word
                             PhonoTacticCombination.Add(probString)
                             i += 1
                         Next
-                        outputString &= String.Join(" ", PhonoTacticCombination)
+                        Return String.Join(" ", PhonoTacticCombination)
                     End If
                 End If
 
@@ -8657,7 +8652,7 @@ Public Class Word
                         GIL2P_OT_ExportValues.Add(Rounding(GIL2P_OT(r),, RoundingDecimals))
                     Next
                     If GIL2P_OT_ExportValues.Count > 0 Then
-                        outputString &= String.Join(" ", GIL2P_OT_ExportValues)
+                        Return String.Join(" ", GIL2P_OT_ExportValues)
                     End If
                 End If
 
@@ -8670,7 +8665,7 @@ Public Class Word
                         PIP2G_OT_ExportValues.Add(Rounding(PIP2G_OT(r),, RoundingDecimals))
                     Next
                     If PIP2G_OT_ExportValues.Count > 0 Then
-                        outputString &= String.Join(" ", PIP2G_OT_ExportValues)
+                        Return String.Join(" ", PIP2G_OT_ExportValues)
                     End If
                 End If
 
@@ -8683,134 +8678,134 @@ Public Class Word
                         SpellingProbability_g2p_ExportValues.Add(Rounding(G2P_OT(r),, RoundingDecimals))
                     Next
                     If SpellingProbability_g2p_ExportValues.Count > 0 Then
-                        outputString &= String.Join(" ", SpellingProbability_g2p_ExportValues)
+                        Return String.Join(" ", SpellingProbability_g2p_ExportValues)
                     End If
                 End If
 
             Case "ForeignWord"
 
                 If ContainsWordListData = True Then
-                    outputString &= ForeignWord
+                    Return ForeignWord
                 End If
 
                     ' Case  "CorrectedSpelling"
-                    ' outputString &= CorrectedSpelling 
+                    ' Return CorrectedSpelling 
                     ' Case  "CorrectedTranscription"
-                    ' outputString &= CorrectedTranscription 
+                    ' Return CorrectedTranscription 
 
             Case "ManuallyReveiwedCount"
-                outputString &= ManuallyReveiwedCount
+                Return ManuallyReveiwedCount
 
                     'The following data is output only, and are not read by the input parser
             Case "IPA"
 
                 If CurrentPhoneCount > 0 Or AllowIrrelevantValues = True Then
-                    outputString &= String.Join(" ", BuildExtendedIpaArray(,,,,, False, False))
+                    Return String.Join(" ", BuildExtendedIpaArray(,,,,, False, False))
                 End If
 
             Case "ZipfValue"
-                outputString &= Rounding(ZipfValue_Word,, 4)
+                Return Rounding(ZipfValue_Word,, 4)
 
             Case "LetterCount"
-                outputString &= OrthographicForm.Length
+                Return OrthographicForm.Length
 
             Case "GraphemeCount"
 
                 If Sonographs_Letters IsNot Nothing Then
-                    outputString &= Sonographs_Letters.Count
+                    Return Sonographs_Letters.Count
                 End If
 
             Case "DiGraphCount"
 
                 If ContainsWordListData = True Then
-                    outputString &= DiGraphCount
+                    Return DiGraphCount
                 Else
                     'Determining if data should be generated
                     If Sonographs_Letters IsNot Nothing And GenerateLackingData = True Then
                         CountComplexGraphemes()
-                        outputString &= DiGraphCount
+                        Return DiGraphCount
                     End If
                 End If
 
             Case "TriGraphCount"
 
                 If ContainsWordListData = True Then
-                    outputString &= TriGraphCount
+                    Return TriGraphCount
                 Else
                     'Determining if data should be generated
                     If Sonographs_Letters IsNot Nothing And GenerateLackingData = True Then
                         CountComplexGraphemes()
-                        outputString &= TriGraphCount
+                        Return TriGraphCount
                     End If
                 End If
 
             Case "LongGraphemesCount"
 
                 If ContainsWordListData = True Then
-                    outputString &= LongGraphemesCount
+                    Return LongGraphemesCount
                 Else
                     'Determining if data should be generated
                     If Sonographs_Letters IsNot Nothing And GenerateLackingData = True Then
                         CountComplexGraphemes()
-                        outputString &= LongGraphemesCount
+                        Return LongGraphemesCount
                     End If
                 End If
 
             Case "SyllableCount"
 
                 If CurrentPhoneCount > 0 Or AllowIrrelevantValues = True Then
-                    outputString &= Syllables.Count
+                    Return Syllables.Count
                 End If
 
             Case "Tone"
 
                 If CurrentPhoneCount > 0 Or AllowIrrelevantValues = True Then
-                    outputString &= Tone
+                    Return Tone
                 End If
 
             Case "MainStressSyllable"
 
                 If CurrentPhoneCount > 0 Or AllowIrrelevantValues = True Then
-                    outputString &= MainStressSyllableIndex
+                    Return MainStressSyllableIndex
                 End If
 
             Case "SecondaryStressSyllable"
 
                 If CurrentPhoneCount > 0 Or AllowIrrelevantValues = True Then
                     If SecondaryStressSyllableIndex <> 0 Then
-                        outputString &= SecondaryStressSyllableIndex
+                        Return SecondaryStressSyllableIndex
                     End If
                 End If
 
             Case "PhoneCount"
 
                 If CurrentPhoneCount > 0 Or AllowIrrelevantValues = True Then
-                    outputString &= CurrentPhoneCount
+                    Return CurrentPhoneCount
                 End If
 
             Case "PhoneCountZero"
 
                 If CurrentPhoneCount > 0 Or AllowIrrelevantValues = True Then
-                    outputString &= CountPhonemes(True, True)
+                    Return CountPhonemes(True, True)
                 End If
 
             Case "PLD1WordCount"
 
                 If CurrentPhoneCount > 0 Or AllowIrrelevantValues = True Then
-                    outputString &= PLD1WordCount
+                    Return PLD1WordCount
                 End If
 
             Case "OLD1WordCount"
 
                 If CurrentPhoneCount > 0 Or AllowIrrelevantValues = True Then
-                    outputString &= OLD1WordCount
+                    Return OLD1WordCount
                 End If
 
             Case "PossiblePoSCount"
 
                 If ContainsWordListData = True Or AllowIrrelevantValues = True Then
                     If AllPossiblePoS.Count > 0 Then
-                        outputString &= AllPossiblePoS.Count
+                        Return AllPossiblePoS.Count
                     End If
                 End If
 
@@ -8818,7 +8813,7 @@ Public Class Word
 
                 If ContainsWordListData = True Then
                     If MostCommonPoS IsNot Nothing Then
-                        outputString &= MostCommonPoS.Item1 & ":" & Rounding(MostCommonPoS.Item2, , RoundingDecimals)
+                        Return MostCommonPoS.Item1 & ":" & Rounding(MostCommonPoS.Item2, , RoundingDecimals)
                     End If
                 End If
 
@@ -8826,7 +8821,7 @@ Public Class Word
 
                 If ContainsWordListData = True Or AllowIrrelevantValues = True Then
                     If AllOccurringLemmas.Count > 0 Then
-                        outputString &= AllOccurringLemmas.Count
+                        Return AllOccurringLemmas.Count
                     End If
                 End If
 
@@ -8834,38 +8829,38 @@ Public Class Word
 
                 If ContainsWordListData = True Then
                     If MostCommonLemma IsNot Nothing Then
-                        outputString &= MostCommonLemma.Item1 & ":" & Rounding(MostCommonLemma.Item2,, RoundingDecimals)
+                        Return MostCommonLemma.Item1 & ":" & Rounding(MostCommonLemma.Item2,, RoundingDecimals)
                     End If
                 End If
 
             Case "ManualEvaluations"
-                outputString &= String.Join("; ", ManualEvaluations).TrimEnd(";")
+                Return String.Join("; ", ManualEvaluations).TrimEnd(";")
 
             Case "ManualEvaluationsCount"
-                outputString &= ManualEvaluations.Count
+                Return ManualEvaluations.Count
 
             Case "OrthographicIsolationPoint"
 
                 If OrthographicIsolationPoint >= 0 Or AllowIrrelevantValues = True Then
-                    outputString &= OrthographicIsolationPoint
+                    Return OrthographicIsolationPoint
                 End If
 
             Case "PhoneticIsolationPoint"
 
                 If PhoneticIsolationPoint >= 0 Or AllowIrrelevantValues = True Then
-                    outputString &= PhoneticIsolationPoint
+                    Return PhoneticIsolationPoint
                 End If
 
             Case "NumberOfSenses"
                 If ContainsWordListData = True Or AllowIrrelevantValues = True Then
                     If AllPossibleSenses.Count > 0 Then
-                        outputString &= AllPossibleSenses.Count
+                        Return AllPossibleSenses.Count
                     End If
                 End If
 
         End Select
 
-        Return outputString
+        Return ""
 
     End Function
 
@@ -9597,1574 +9592,6 @@ Public Class TextOnlyWord
 
 End Class
 
-
-'''' <summary>
-'''' A class that holds text representations of all properties in the class Word, suitable a an intermediate to the AFC-list database.
-'''' </summary>
-'Public Class TextOnlyWord_OLD
-
-'    Public Property OrthographicForm As String = ""
-'    Public Property GIL2P_OT_Average As String = ""
-'    Public Property GIL2P_OT_Min As String = ""
-'    Public Property PIP2G_OT_Average As String = ""
-'    Public Property PIP2G_OT_Min As String = ""
-'    Public Property G2P_OT_Average As String = ""
-'    Public Property UpperCase As String = ""
-'    Public Property Homographs As String = ""
-'    Public Property HomographCount As String = ""
-'    Public Property SpecialCharacter As String = ""
-'    Public Property RawWordTypeFrequency As String = ""
-'    Public Property RawDocumentCount As String = ""
-'    Public Property PhoneticForm As String = ""
-'    Public Property TemporarySyllabification As String = ""
-'    Public Property ReducedTranscription As String = ""
-
-'    Public Property PhonotacticType As String = ""
-
-'    Public Property SSPP_Average As String = ""
-'    Public Property SSPP_Min As String = ""
-
-'    Public Property PSP_Sum As String = ""
-'    Public Property PSBP_Sum As String = ""
-
-'    Public Property S_PSP_Average As String = ""
-'    Public Property S_PSBP_Average As String = ""
-
-'    Public Property Homophones As String = ""
-'    Public Property HomophoneCount As String = ""
-
-'    Public Property PNDP As String = ""
-'    Public Property PLD1Transcriptions As String = ""
-
-'    Public Property ONDP As String = ""
-'    Public Property OLD1Spellings As String = ""
-
-'    Public Property PLDx_Average As String = ""
-'    Public Property OLDx_Average As String = ""
-'    Public Property PLDx_Neighbors As String = ""
-'    Public Property OLDx_Neighbors As String = ""
-
-'    Public Property Sonographs As String = ""
-'    Public Property AllPoS As String = ""
-'    Public Property AllLemmas As String = ""
-'    Public Property NumberOfSenses As String = ""
-'    Public Property Abbreviation As String = ""
-'    Public Property Acronym As String = ""
-
-'    Public Property AllPossibleSenses As String = ""
-'    Public Property SSPP As String = ""
-'    Public Property PSP As String = ""
-'    Public Property PSBP As String = ""
-'    Public Property S_PSP As String = ""
-'    Public Property S_PSBP As String = ""
-'    Public Property GIL2P_OT As String = ""
-'    Public Property PIP2G_OT As String = ""
-'    Public Property G2P_OT As String = ""
-'    Public Property ForeignWord As String = ""
-'    'Public Property CorrectedSpelling As  String = ""
-'    Public Property CorrectedTranscription As String = ""
-
-'    Public Property ManuallyReveiwedCount As String = ""
-
-'    'Variables that are not read from the txt input file, but should be exported to the output file
-'    Public Property IPA As String = ""
-'    Public Property ZipfValue As String = ""
-'    Public Property LetterCount As String = ""
-'    Public Property GraphemeCount As String = ""
-'    Public Property DiGraphCount As String = ""
-'    Public Property TriGraphCount As String = ""
-'    Public Property LongGraphemesCount As String = ""
-'    Public Property SyllableCount As String = ""
-'    Public Property Tone As String = ""
-'    Public Property MainStressSyllable As String = ""
-'    Public Property SecondaryStressSyllable As String = ""
-'    Public Property PhoneCount As String = ""
-'    Public Property PhoneCountZero As String = ""
-'    Public Property PLD1WordCount As String = ""
-'    Public Property OLD1WordCount As String = ""
-'    Public Property PossiblePoSCount As String = ""
-'    Public Property MostCommonPoS As String = ""
-'    Public Property PossibleLemmaCount As String = ""
-'    Public Property MostCommonLemma As String = ""
-'    Public Property ManualEvaluations As String = ""
-'    Public Property ManualEvaluationsCount As String = ""
-
-'    Public Property OrthographicIsolationPoint As String = ""
-'    Public Property PhoneticIsolationPoint As String = ""
-
-
-
-'    ''' <summary>
-'    ''' Converts the current TextOnlyWord to a new Word
-'    ''' </summary>
-'    ''' <returns></returns>
-'    Public Function ConvertToWord(ByRef DetectedErrorsList As List(Of String),
-'                                  Optional ByVal ValidPhoneticCharacters As List(Of String) = Nothing,
-'                                  Optional ByVal CorrectDoubleSpacesInPhoneticForm As Boolean = True,
-'                                  Optional ByVal CheckPhonemeValidity As Boolean = True) As Word
-
-'        If ValidPhoneticCharacters Is Nothing Then ValidPhoneticCharacters = CreateListOfValidPhoneticCharactersForSwedish()
-
-'        Dim ContainsInvalidPhoneticCharacter As Boolean = False
-'        Dim CorrectedDoubleSpacesInPhoneticForm As Boolean = False
-
-'        Dim newWord As New Word
-'        Dim CurrentValue As String
-
-'        ' OrthographicForm
-'        newWord.OrthographicForm = OrthographicForm.Trim
-
-'        ' GIL2P_OT_Average
-'        CurrentValue = GIL2P_OT_Average.Trim
-'        If IsNumeric(CurrentValue) Then newWord.GIL2P_OT_Average = CurrentValue
-
-'        ' GIL2P_OT_Min
-'        CurrentValue = GIL2P_OT_Min.Trim
-'        If IsNumeric(CurrentValue) Then newWord.GIL2P_OT_Min = CurrentValue
-
-'        ' PIP2G_OT_Average
-'        CurrentValue = PIP2G_OT_Average.Trim
-'        If IsNumeric(CurrentValue) Then newWord.PIP2G_OT_Average = CurrentValue
-
-'        ' PIP2G_OT_Min
-'        CurrentValue = PIP2G_OT_Min.Trim
-'        If IsNumeric(CurrentValue) Then newWord.PIP2G_OT_Min = CurrentValue
-
-'        ' G2P_OT_Average
-'        newWord.G2P_OT_Average = G2P_OT_Average.Trim
-
-'        ' UpperCase
-'        CurrentValue = UpperCase.Trim
-'        If IsNumeric(CurrentValue) Then newWord.ProportionStartingWithUpperCase = CurrentValue
-
-'        ' Homographs
-'        'Only reading forms if the input string is not empty
-'        If Not Homographs.Trim = "" Then
-'            newWord.LanguageHomographs = New List(Of String)
-'            Dim InputForms() As String = Homographs.Trim.Split("|")
-'            For CurrentIndex = 0 To InputForms.Length - 1
-'                Dim newInputForm As String = InputForms(CurrentIndex).Trim
-'                If Not newInputForm = "" Then
-'                    newWord.LanguageHomographs.Add(newInputForm)
-'                End If
-'            Next
-'        End If
-
-'        ' HomographCount
-'        CurrentValue = HomographCount.Trim
-'        If IsNumeric(CurrentValue) Then newWord.LanguageHomographCount = CurrentValue
-'        'If newWord.LanguageHomographCount <> newWord.LanguageHomographs.Count Then Errors("The number of actual (language) homographs do not agree with the noted homograph count for word: " & newWord.OrthographicForm)
-
-'        ' SpecialCharacter
-'        newWord.OrthographicFormContainsSpecialCharacter = SpecialCharacter.Trim
-
-'        ' RawWordTypeFrequency
-'        CurrentValue = RawWordTypeFrequency.Trim
-'        If IsNumeric(CurrentValue) Then
-'            newWord.RawWordTypeFrequency = CurrentValue
-
-'            ''Calculating the Zip-scale value
-'            'newWord.CalculateZipfValue_Word(newWord.RawWordTypeFrequency,
-'            '                                AfcListCorpusInfo.AfcListCorpusTokenCount,
-'            '                                AfcListCorpusInfo.AfcListCorpusWordTypeCount)
-
-'        End If
-
-'        ' RawDocumentCount
-'        CurrentValue = RawDocumentCount.Trim
-'        If IsNumeric(CurrentValue) Then newWord.RawDocumentCount = CurrentValue
-
-'        ' PhoneticForm
-'        Dim ContainsInvalidPhoneticCharacters As Boolean = False
-'        newWord.ParseInputPhoneticString(PhoneticForm, ValidPhoneticCharacters,
-'                                                 ContainsInvalidPhoneticCharacter, CorrectDoubleSpacesInPhoneticForm,
-'                                                 CorrectedDoubleSpacesInPhoneticForm, CheckPhonemeValidity)
-
-'        If PhoneticForm <> "" Then
-
-
-'            'Checking for valid phonetic characters
-'            If ContainsInvalidPhoneticCharacters = True Then
-'                DetectedErrorsList.Add(String.Join(" ", newWord.BuildExtendedIpaArray) & vbTab & newWord.OrthographicForm & vbTab & "Contains invalid phonetic character.")
-'            End If
-
-'            'Determining input syllable structure and openness
-'            Dim TotalErrors As Integer = 0
-'            TotalErrors = newWord.DetermineSyllableIndices() 'Determining internal syllable structure
-'            newWord.DetermineSyllableOpenness()  'Detecting syllable openness
-
-'            'Checking for transcription errors
-'            TotalErrors += newWord.MarkSyllableWeightErrors()
-'            TotalErrors += newWord.MarkPhoneticLengthInWrongPlace()
-
-'            'Only adding errors if CheckTranscriptionStructure = true
-'            If TotalErrors > 0 Then DetectedErrorsList.Add(String.Join(" ", newWord.BuildExtendedIpaArray) & vbTab & newWord.OrthographicForm & vbTab & "ErrorMessages: " & vbTab & String.Join(", ", newWord.ManualEvaluations))
-
-'        End If
-
-
-'        'TemporarySyllabification is not read
-'        'ReducedTranscription is not read
-
-'        ' PhonotacticType
-'        newWord.PhonotacticType = PhonotacticType.Trim
-
-'        ' SSPP_Average
-'        CurrentValue = SSPP_Average.Trim
-'        If IsNumeric(CurrentValue) Then newWord.SSPP_Average = CurrentValue
-
-
-'        ' SSPP_Min
-'        CurrentValue = SSPP_Min.Trim
-'        If IsNumeric(CurrentValue) Then newWord.SSPP_Min = CurrentValue
-
-'        ' PSP_Sum
-'        CurrentValue = PSP_Sum.Trim
-'        If IsNumeric(CurrentValue) Then newWord.PSP_Sum = CurrentValue
-
-'        ' PSBP_Sum
-'        CurrentValue = PSBP_Sum.Trim
-'        If IsNumeric(CurrentValue) Then newWord.PSBP_Sum = CurrentValue
-
-'        ' S_PSP_Average
-'        CurrentValue = S_PSP_Average.Trim
-'        If IsNumeric(CurrentValue) Then newWord.S_PSP_Average = CurrentValue
-
-'        ' S_PSBP_Average
-'        CurrentValue = S_PSBP_Average.Trim
-'        If IsNumeric(CurrentValue) Then newWord.S_PSBP_Average = CurrentValue
-
-
-'        ' Homophones
-'        'Only reading forms if the input string is not empty
-'        If Not Homophones.Trim = "" Then
-'            newWord.LanguageHomophones = New List(Of String)
-'            Dim InputForms() As String = Homophones.Trim.Split("|")
-'            For CurrentIndex = 0 To InputForms.Length - 1
-'                Dim newInputForm As String = InputForms(CurrentIndex).Trim
-'                If Not newInputForm = "" Then
-'                    newWord.LanguageHomophones.Add(newInputForm)
-'                End If
-'            Next
-'        End If
-
-'        ' HomophoneCount
-'        CurrentValue = HomophoneCount.Trim
-'        If IsNumeric(CurrentValue) Then newWord.LanguageHomophoneCount = CurrentValue
-'        'If newWord.LanguageHomophoneCount <> newWord.LanguageHomophones.Count Then Errors("The number of actual (language) homophones do not agree with the noted homophone count for word: " & newWord.OrthographicForm)
-
-'        ' PNDP
-'        If PNDP.Trim <> "" Then
-'            CurrentValue = PNDP.Trim
-'            If IsNumeric(CurrentValue) Then newWord.FWPN_DensityProbability = CurrentValue
-'        End If
-
-
-'        ' PLD1Transcriptions
-'        'Only reads PLD1Transcriptions if the string is not empty
-'        If Not PLD1Transcriptions.Trim = "" Then
-
-'            Dim AllPLD1Transcriptions() As String = PLD1Transcriptions.Trim.Split("|")
-'            For i = 0 To AllPLD1Transcriptions.Length - 1
-'                newWord.PLD1Transcriptions.Add(AllPLD1Transcriptions(i))
-'            Next
-
-'            'Reporting erroneous PLD1 transcription arrays of length = 1
-'            If newWord.PLD1Transcriptions.Count = 1 Then
-'                DetectedErrorsList.Add("The input word " & newWord.OrthographicForm & " has an erroneous PLD1 transcription array. Array length should never be 1!" & vbCrLf & "The PLD1 input string look as follows:" & PLD1Transcriptions)
-'                SendInfoToLog("The input word " & newWord.OrthographicForm & " has an erroneous PLD1 transcription array. Array length should never be 1!" & vbCrLf & "The PLD1 input string look as follows:" & PLD1Transcriptions)
-'            End If
-
-'            'Setting PLD1 Word count
-'            If newWord.PLD1Transcriptions.Count = 0 Then
-'                newWord.PLD1WordCount = 0
-'            Else
-'                newWord.PLD1WordCount = newWord.PLD1Transcriptions.Count - 1 '-1 is used since the first transcription in the PLD1Transcriptions array is the current member word
-'            End If
-'        End If
-
-'        ' ONDP
-'        If ONDP.Trim <> "" Then
-'            CurrentValue = ONDP.Trim
-'            If IsNumeric(CurrentValue) Then newWord.FWON_DensityProbability = CurrentValue
-'        End If
-
-'        ' OLD1Spellings
-'        'Only reads OLD1Transcriptions if the string is not empty
-'        If Not OLD1Spellings.Trim = "" Then
-
-'            Dim AllOLD1Spellings() As String = OLD1Spellings.Trim.Split("|")
-'            For i = 0 To AllOLD1Spellings.Length - 1
-'                newWord.OLD1Spellings.Add(AllOLD1Spellings(i))
-'            Next
-
-'            'Reporting erroneous OLD1 transcription arrays of length = 1
-'            If newWord.OLD1Spellings.Count = 1 Then
-'                DetectedErrorsList.Add("The input word " & newWord.OrthographicForm & " has an erroneous OLD1 transcription array. Array length should never be 1!" & vbCrLf & "The OLD1 input string look as follows:" & OLD1Spellings)
-'                SendInfoToLog("The input word " & newWord.OrthographicForm & " has an erroneous OLD1 transcription array. Array length should never be 1!" & vbCrLf & "The OLD1 input string look as follows:" & OLD1Spellings)
-'            End If
-
-'            'Setting OLD1 Word count
-'            If newWord.OLD1Spellings.Count = 0 Then
-'                newWord.OLD1WordCount = 0
-'            Else
-'                newWord.OLD1WordCount = newWord.OLD1Spellings.Count - 1 '-1 is used since the first spelling in the OLD1Spellings array is the current member word
-'            End If
-'        End If
-
-'        ' PLDx_Average
-'        If PLDx_Average.Trim <> "" Then
-'            CurrentValue = PLDx_Average.Trim
-'            If IsNumeric(CurrentValue) Then newWord.PLDx_Average = CurrentValue
-'        End If
-
-'        ' OLDx_Average
-'        If OLDx_Average.Trim <> "" Then
-'            CurrentValue = OLDx_Average.Trim
-'            If IsNumeric(CurrentValue) Then newWord.OLDx_Average = CurrentValue
-'        End If
-
-'        ' PLDx_Neighbors
-'        'Only reads PLDx_Neighbors if the string is not empty
-'        If Not PLDx_Neighbors.Trim = "" Then
-
-'            Dim AllPldxData() As String = PLDx_Neighbors.Trim.Split("|")
-'            For i = 0 To AllPldxData.Length - 1
-'                Dim CurrentSplit() As String = AllPldxData(i).Split(":")
-'                If CurrentSplit.Length > 2 Then
-'                    newWord.PLDxData.Add(New Tuple(Of Integer, String, Single)(CurrentSplit(0), CurrentSplit(1), CurrentSplit(2)))
-'                End If
-'            Next
-'        End If
-
-'        ' OLDx_Neighbors
-'        'Only reads OLDx_Neighbors if the string is not empty
-'        If Not OLDx_Neighbors.Trim = "" Then
-
-'            Dim AllOldxData() As String = OLDx_Neighbors.Trim.Split("|")
-'            For i = 0 To AllOldxData.Length - 1
-'                Dim CurrentSplit() As String = AllOldxData(i).Split(":")
-'                If CurrentSplit.Length > 2 Then
-'                    newWord.OLDxData.Add(New Tuple(Of Integer, String, Single)(CurrentSplit(0), CurrentSplit(1), CurrentSplit(2)))
-'                End If
-'            Next
-'        End If
-
-'        ' Sonographs
-'        'Reading graphemes, only if the input string is not empty
-'        If Not Sonographs.Trim = "" Then
-'            Dim AllSonographs() As String = Sonographs.Trim.Split("|")
-'            newWord.Sonographs_Letters = New List(Of String)
-'            newWord.Sonographs_Pronunciation = New List(Of String)
-'            For Grapheme = 0 To AllSonographs.Length - 1
-
-'                Dim SonographsSplit() As String = AllSonographs(Grapheme).Trim.Split("-")
-'                newWord.Sonographs_Letters.Add(SonographsSplit(0).Trim)
-
-'                'Adds phoneme blocks only if they exist
-'                If SonographsSplit.Length > 1 Then
-'                    newWord.Sonographs_Pronunciation.Add(SonographsSplit(1).Trim)
-'                End If
-
-'            Next
-'        End If
-
-'        ' AllPoS
-'        'Only reads PoS if the string is not empty
-'        If Not AllPoS.Trim = "" Then
-
-'            Dim TempAllPoS() As String
-
-'            'Allowing for semicolon delimiter used in previous formats
-'            If AllPoS.Trim.Contains(";") Then
-'                'Parsing using semicolon delimiter
-'                TempAllPoS = AllPoS.Trim.Split(";")
-'            Else
-'                'Parsing using | delimiter
-'                TempAllPoS = AllPoS.Trim.Split("|")
-'            End If
-
-'            Dim AlreadyAddedPoSs As New SortedSet(Of String)
-'            For PoS = 0 To TempAllPoS.Length - 1
-'                Dim CurrentPoSSplit() As String = TempAllPoS(PoS).Trim.Split(":")
-
-'                Dim Temp_PoS As String = CurrentPoSSplit(0).Trim
-
-'                If Not AlreadyAddedPoSs.Contains(Temp_PoS) Then
-'                    AlreadyAddedPoSs.Add(Temp_PoS)
-
-'                    If CurrentPoSSplit.Length = 1 Then
-'                        newWord.AllPossiblePoS.Add(New Tuple(Of String, Double)(Temp_PoS, 0))
-'                    ElseIf CurrentPoSSplit.Length > 1 Then
-'                        newWord.AllPossiblePoS.Add(New Tuple(Of String, Double)(Temp_PoS, CurrentPoSSplit(1).Trim))
-'                    End If
-
-'                Else
-'                    DetectedErrorsList.Add("Detected Error In a Part-Of-Speech String. Duplicate Parts-Of-speech For word " & newWord.OrthographicForm)
-'                    SendInfoToLog("Detected Error In a Part-Of-Speech String. Duplicate Parts-Of-speech For word " & newWord.OrthographicForm)
-'                End If
-'            Next
-
-'            'Setting most common PoS
-'            If newWord.AllPossiblePoS.Count > 0 Then
-'                'newWord.MostCommonPoS = New StringDoubleCombination
-'                Dim HigestPoSValue As Double = 0
-'                Dim HigestPoSIndex As Integer = 0
-'                For PoSIndex = 0 To newWord.AllPossiblePoS.Count - 1
-'                    If newWord.AllPossiblePoS(PoSIndex).Item2 > HigestPoSValue Then
-'                        HigestPoSValue = newWord.AllPossiblePoS(PoSIndex).Item2
-'                        HigestPoSIndex = PoSIndex
-'                    End If
-'                Next
-'                newWord.MostCommonPoS = newWord.AllPossiblePoS(HigestPoSIndex)
-'            End If
-'        End If
-
-'        ' AllLemmas
-'        'Only reads AllLemmas if the string is not empty
-'        If Not AllLemmas.Trim = "" Then
-
-'            Dim TempAllLemmas() As String = AllLemmas.Trim.Split("|")
-'            Dim AlreadyAddedLemmas As New SortedSet(Of String)
-'            For Lemma = 0 To TempAllLemmas.Length - 1
-'                Dim CurrentLemmaSplit() As String = TempAllLemmas(Lemma).Trim.Split(":")
-'                Dim tempLemma As String = CurrentLemmaSplit(0).Trim
-
-'                If Not AlreadyAddedLemmas.Contains(tempLemma) Then
-'                    AlreadyAddedLemmas.Add(tempLemma)
-'                    If CurrentLemmaSplit.Length = 1 Then
-'                        newWord.AllOccurringLemmas.Add(New Tuple(Of String, Double)(tempLemma, 0))
-'                    ElseIf CurrentLemmaSplit.Length > 1 Then
-'                        newWord.AllOccurringLemmas.Add(New Tuple(Of String, Double)(tempLemma, CurrentLemmaSplit(1).Trim))
-'                    End If
-'                Else
-'                    DetectedErrorsList.Add("Detected Error in a lemma input String. Duplicate lemmas for word " & newWord.OrthographicForm)
-'                    MsgBox("Detected Error in a lemma input String. Duplicate lemmas for word " & newWord.OrthographicForm)
-'                End If
-'            Next
-
-'            'Setting most common lemma
-'            If newWord.AllOccurringLemmas.Count > 0 Then
-'                'newWord.MostCommonLemma = New StringDoubleCombination
-'                Dim HigestLemmaValue As Double = 0
-'                Dim HigestLemmaIndex As Integer = 0
-'                For LemmaIndex = 0 To newWord.AllOccurringLemmas.Count - 1
-'                    If newWord.AllOccurringLemmas(LemmaIndex).Item2 > HigestLemmaValue Then
-'                        HigestLemmaValue = newWord.AllOccurringLemmas(LemmaIndex).Item2
-'                        HigestLemmaIndex = LemmaIndex
-'                    End If
-'                Next
-'                newWord.MostCommonLemma = newWord.AllOccurringLemmas(HigestLemmaIndex)
-'            End If
-'        End If
-
-'        ' NumberOfSenses
-'        CurrentValue = NumberOfSenses.Trim
-'        If IsNumeric(CurrentValue) Then newWord.NumberOfSenses = CurrentValue
-
-'        ' Abbreviation
-'        newWord.Abbreviation = Abbreviation.Trim
-
-'        ' Acronym
-'        newWord.Acronym = Acronym.Trim
-
-'        ' AllPossibleSenses
-'        'Only reads AllPossibleSenses if the string is not empty
-'        If Not AllPossibleSenses.Trim = "" Then
-
-'            Dim AllSenses() As String = AllPossibleSenses.Trim.Split("|")
-'            Dim AlreadyAddedSenses As New SortedSet(Of String)
-'            For Sense = 0 To AllSenses.Length - 1
-'                Dim CurrentSense As String = AllSenses(Sense).Trim
-'                If Not AlreadyAddedSenses.Contains(CurrentSense) Then
-'                    AlreadyAddedSenses.Add(CurrentSense)
-'                    newWord.AllPossibleSenses.Add(CurrentSense)
-'                Else
-'                    DetectedErrorsList.Add("Detected Error in a possible senses input string. Duplicate senses for word " & newWord.OrthographicForm)
-'                    SendInfoToLog("Detected Error in a possible senses input string. Duplicate senses for word " & newWord.OrthographicForm)
-'                End If
-'            Next
-
-'            'Setting Senses count
-'            newWord.NumberOfSenses = newWord.AllPossibleSenses.Count
-'        End If
-
-'        ' SSPP
-'        'Reading PhonoTacticProbability data, only if the input string is not empty
-'        If Not SSPP.Trim = "" Then
-
-'            newWord.PP_Phonemes = New List(Of String)
-'            newWord.PP = New List(Of Double)
-
-'            Dim PhonoTacticCombination() As String = SSPP.Trim.Split(" ")
-'            For i = 0 To PhonoTacticCombination.Count - 2 Step 2
-'                newWord.PP_Phonemes.Add(PhonoTacticCombination(i).TrimStart("[").TrimEnd("]"))
-'                newWord.PP.Add(PhonoTacticCombination(i + 1).Trim)
-'            Next
-
-'            'Adding also the word end string
-'            newWord.PP_Phonemes.Add(PhonoTacticCombination(PhonoTacticCombination.Count - 1))
-
-'        End If
-
-
-'        ' PSP
-'        'Reading PSP data, only if the input string is not empty
-'        If Not PSP.Trim = "" Then
-
-'            newWord.PSP_Phonemes = New List(Of String)
-'            newWord.PSP = New List(Of Double)
-
-'            Dim PhonoTacticCombination() As String = PSP.Trim.Split(" ")
-'            For i = 0 To PhonoTacticCombination.Count - 2 Step 2
-'                newWord.PSP_Phonemes.Add(PhonoTacticCombination(i).TrimStart("[").TrimEnd("]"))
-'                newWord.PSP.Add(PhonoTacticCombination(i + 1).Trim)
-'            Next
-
-'        End If
-
-'        ' PSBP
-'        'Reading PSBP data, only if the input string is not empty
-'        If Not PSBP.Trim = "" Then
-
-'            newWord.PSBP_Phonemes = New List(Of String)
-'            newWord.PSBP = New List(Of Double)
-
-'            Dim PhonoTacticCombinationString As String = PSBP.Trim
-'            'Replacing "[" and "]" with vbTabs, which can be used to segment into an array
-'            PhonoTacticCombinationString = PhonoTacticCombinationString.Replace("[", vbTab)
-'            PhonoTacticCombinationString = PhonoTacticCombinationString.Replace("]", vbTab)
-'            Dim PhonoTacticCombination() As String = PhonoTacticCombinationString.Trim.Split(vbTab)
-'            For i = 0 To PhonoTacticCombination.Count - 2 Step 2
-'                newWord.PSBP_Phonemes.Add(PhonoTacticCombination(i).Trim)
-'                newWord.PSBP.Add(PhonoTacticCombination(i + 1).Trim)
-'            Next
-'        End If
-
-'        ' S_PSP
-'        'Reading S_PSP data, only if the input string is not empty
-'        If Not S_PSP.Trim = "" Then
-
-'            newWord.S_PSP_Phonemes = New List(Of String)
-'            newWord.S_PSP = New List(Of Double)
-
-'            Dim PhonoTacticCombination() As String = S_PSP.Trim.Split(" ")
-'            For i = 0 To PhonoTacticCombination.Count - 2 Step 2
-'                newWord.S_PSP_Phonemes.Add(PhonoTacticCombination(i).TrimStart("[").TrimEnd("]"))
-'                newWord.S_PSP.Add(PhonoTacticCombination(i + 1).Trim)
-'            Next
-'        End If
-
-'        ' S_PSBP
-'        'Reading S_PSBP data, only if the input string is not empty
-'        If Not S_PSBP.Trim = "" Then
-
-'            newWord.S_PSBP_Phonemes = New List(Of String)
-'            newWord.S_PSBP = New List(Of Double)
-
-'            Dim PhonoTacticCombinationString As String = S_PSBP.Trim
-'            'Replacing "[" and "]" with vbTabs, which can be used to segment into an array
-'            PhonoTacticCombinationString = PhonoTacticCombinationString.Replace("[", vbTab)
-'            PhonoTacticCombinationString = PhonoTacticCombinationString.Replace("]", vbTab)
-'            Dim PhonoTacticCombination() As String = PhonoTacticCombinationString.Trim.Split(vbTab)
-'            For i = 0 To PhonoTacticCombination.Count - 2 Step 2
-'                newWord.S_PSBP_Phonemes.Add(PhonoTacticCombination(i).Trim)
-'                newWord.S_PSBP.Add(PhonoTacticCombination(i + 1).Trim)
-'            Next
-'        End If
-
-'        ' GIL2P_OT
-'        'Reading GIL2P_OT data, only if the input string is not empty
-'        If Not GIL2P_OT.Trim = "" Then
-'            Dim AllGIL2P_OT() As String = GIL2P_OT.Trim.Split(" ")
-'            For n = 0 To AllGIL2P_OT.Length - 1
-'                newWord.GIL2P_OT.Add(AllGIL2P_OT(n).Trim)
-'            Next
-'        End If
-
-'        ' PIP2G_OT
-'        'Reading PIP2G_OT data, only if the input string is not empty
-'        If Not PIP2G_OT.Trim = "" Then
-'            Dim AllPIP2G_OT() As String = PIP2G_OT.Trim.Split(" ")
-'            For n = 0 To AllPIP2G_OT.Length - 1
-'                newWord.PIP2G_OT.Add(AllPIP2G_OT(n).Trim)
-'            Next
-'        End If
-
-'        ' G2P_OT
-'        'Reading G2P_OT data, only if the input string is not empty
-'        If Not G2P_OT.Trim = "" Then
-'            Dim AllG2P_OT() As String = G2P_OT.Trim.Split(" ")
-'            For n = 0 To AllG2P_OT.Length - 1
-'                newWord.G2P_OT.Add(AllG2P_OT(n).Trim)
-'            Next
-'        End If
-
-'        ' ForeignWord
-'        newWord.ForeignWord = ForeignWord.Trim
-
-
-'        ' ' "CorrectedSpelling"
-'        '    ' CorrectedSpelling
-'        '    newWord.CorrectedSpelling = CorrectedSpelling.Trim
-'        '
-
-'        ' ' "CorrectedTranscription"
-'        '    ' CorrectedTranscription
-'        '    newWord.CorrectedTranscription = CorrectedTranscription.Trim
-'        '
-
-'        'SAMPA support has been removed
-'        ' ' "SAMPA"
-'        '    ' SAMPA
-
-'        '    'Only reading SAMPA forms if the input string is not empty
-'        '    If Not SAMPA.Trim = "" Then
-'        '        Dim SampaForms() As String = SAMPA.Trim.Split(" ")
-'        '        newWord._SAMPA = New List(Of String)
-'        '        For SampaFormIndex = 0 To SampaForms.Length - 1
-'        '            Dim newSampaForm As String = SampaForms(SampaFormIndex.Trim
-'        '            If Not newSampaForm = "" Then
-'        '                newWord._SAMPA.Add(newSampaForm)
-'        '            End If
-'        '        Next
-'        '    End If
-'        '
-
-'        ' ManuallyReveiwedCount
-'        CurrentValue = ManuallyReveiwedCount.Trim
-'        If IsNumeric(CurrentValue) Then newWord.ManuallyReveiwedCount = CurrentValue
-
-'        ' ManualEvaluations
-'        Dim inputArray() As String = ManualEvaluations.Trim.Split(",")
-'        For n = 0 To inputArray.Length - 1
-'            If Not inputArray(n).Trim = "" Then newWord.ManualEvaluations.Add(inputArray(n).Trim)
-'        Next
-
-'        ' OrthographicIsolationPoint
-'        If OrthographicIsolationPoint.Trim <> "" Then
-'            CurrentValue = OrthographicIsolationPoint.Trim
-'            If IsNumeric(CurrentValue) Then newWord.OrthographicIsolationPoint = CurrentValue
-'        End If
-
-'        ' PhoneticIsolationPoint
-'        If PhoneticIsolationPoint.Trim <> "" Then
-'            CurrentValue = PhoneticIsolationPoint.Trim
-'            If IsNumeric(CurrentValue) Then newWord.PhoneticIsolationPoint = CurrentValue
-'        End If
-
-'        'Logging parsing errors only if the word contains a phonetic transcription
-'        If newWord.Syllables.Count > 0 Then
-
-'            If ContainsInvalidPhoneticCharacter = True Then
-'                DetectedErrorsList.Add("InputFileContainsInvalidPhoneticCharacters: " & newWord.OrthographicForm & vbTab & String.Join(" ", newWord.BuildExtendedIpaArray))
-
-'                SendInfoToLog(newWord.OrthographicForm & vbTab & String.Join(" ", newWord.BuildExtendedIpaArray), "InputFileContainsInvalidPhoneticCharacters")
-'            End If
-
-'            If CorrectedDoubleSpacesInPhoneticForm = True Then
-'                DetectedErrorsList.Add("CorrectedDoubleSpacesInPhoneticForm: " & newWord.OrthographicForm & vbTab & String.Join(" ", newWord.BuildExtendedIpaArray))
-
-'                SendInfoToLog(newWord.OrthographicForm & vbTab & String.Join(" ", newWord.BuildExtendedIpaArray), "CorrectedDoubleSpacesInPhoneticForm")
-'            End If
-
-'        End If
-
-'        Return newWord
-
-'    End Function
-
-'End Class
-
-'Public Class TextOnlyWord_OLD
-
-'    Private Word As New Word
-
-'    Public Sub SetWord(ByRef Word As Word)
-'        Me.Word = Word
-'    End Sub
-'    Public Function GetWord() As Word
-'        Return Word
-'    End Function
-
-'    Public RoundingDecimals As Integer = 4
-'    Public AllowIrrelevantValues As Boolean = True
-'    Public GenerateLackingData As Boolean = False
-
-'    Private Function LocalPhoneCount() As Integer
-'        Return Word.CountPhonemes(False)
-'    End Function
-
-
-'    Public ReadOnly Property OrthographicForm As String
-'        Get
-'            Return Word.OrthographicForm
-'        End Get
-'    End Property
-
-'    Public ReadOnly Property GIL2P_OT_Average As String
-'        Get
-'            If LocalPhoneCount() > 0 Or AllowIrrelevantValues = True Then
-'                Return Rounding(Word.GIL2P_OT_Average, , RoundingDecimals)
-'            Else
-'                Return ""
-'            End If
-'        End Get
-'    End Property
-
-'    Public ReadOnly Property GIL2P_OT_Min As String
-'        Get
-'            If LocalPhoneCount() > 0 Or AllowIrrelevantValues = True Then
-'                Return Rounding(Word.GIL2P_OT_Min, , RoundingDecimals)
-'            Else
-'                Return ""
-'            End If
-'        End Get
-'    End Property
-
-'    Public ReadOnly Property PIP2G_OT_Average As String
-'        Get
-'            If LocalPhoneCount() > 0 Or AllowIrrelevantValues = True Then
-'                Return Rounding(Word.PIP2G_OT_Average, , RoundingDecimals)
-'            Else
-'                Return ""
-'            End If
-'        End Get
-'    End Property
-'    Public ReadOnly Property PIP2G_OT_Min As String
-'        Get
-'            If LocalPhoneCount() > 0 Or AllowIrrelevantValues = True Then
-'                Return Rounding(Word.PIP2G_OT_Min, , RoundingDecimals)
-'            Else
-'                Return ""
-'            End If
-'        End Get
-'    End Property
-'    Public ReadOnly Property G2P_OT_Average As String
-'        Get
-'            If LocalPhoneCount() > 0 Or AllowIrrelevantValues = True Then
-'                Return Rounding(Word.G2P_OT_Average, , RoundingDecimals)
-'            Else
-'                Return ""
-'            End If
-'        End Get
-'    End Property
-
-
-
-'    Public ReadOnly Property UpperCase As String
-'        Get
-'            If Word.ContainsWordListData = True Then
-'                Return Rounding(Word.ProportionStartingWithUpperCase,, 2)
-'            Else
-'                Return ""
-'            End If
-'        End Get
-'    End Property
-
-
-'    Public ReadOnly Property LanguageHomographs As String
-'        Get
-'            If Word.LanguageHomographs IsNot Nothing Then
-'                Return String.Join("|", Word.LanguageHomographs)
-'            Else
-'                Return ""
-'            End If
-'        End Get
-'    End Property
-
-'    Public ReadOnly Property SpecialCharacter As String
-'        Get
-'            If Word.ContainsWordListData = True Then
-'                Return Word.OrthographicFormContainsSpecialCharacter
-'            Else
-'                If GenerateLackingData = True Then
-'                    Return Word.MarkSpecialCharacterWords_ByNormalCharList(SwedishOrthographicCharacters)
-'                Else
-'                    Return ""
-'                End If
-'            End If
-'        End Get
-'    End Property
-
-
-'    Public ReadOnly Property RawWordTypeFrequency As String
-'        Get
-'            If Word.ContainsWordListData = True Then
-'                Return Word.RawWordTypeFrequency
-'            Else
-'                Return ""
-'            End If
-'        End Get
-'    End Property
-'    Public ReadOnly Property RawDocumentCount As String
-'        Get
-'            If Word.ContainsWordListData = True Then
-'                Return Word.RawDocumentCount
-'            Else
-'                Return ""
-'            End If
-'        End Get
-'    End Property
-
-'    Public ReadOnly Property PhoneticForm As String
-'        Get
-'            If LocalPhoneCount() > 0 Or AllowIrrelevantValues = True Then
-'                Return String.Join(" ", Word.BuildExtendedIpaArray(False))
-'            Else
-'                Return ""
-'            End If
-'        End Get
-'    End Property
-
-'    Public ReadOnly Property ReducedTranscription As String
-'        Get
-'            If LocalPhoneCount() > 0 Or AllowIrrelevantValues = True Then
-'                Return String.Join(" ", Word.BuildReducedIpaArray())
-'            Else
-'                Return ""
-'            End If
-'        End Get
-'    End Property
-
-'    Public ReadOnly Property PhonotacticType As String
-'        Get
-'            If LocalPhoneCount() > 0 Or AllowIrrelevantValues = True Then
-'                'Checks if phonotactic type has been determined
-'                If Word.PhonotacticType <> "" Then
-'                    Return Word.PhonotacticType
-'                Else
-'                    If GenerateLackingData = True Then
-'                        'Determines the phonotectic type
-'                        Return Word.SetWordPhonotacticType()
-'                    Else
-'                        Return ""
-'                    End If
-'                End If
-'            Else
-'                Return ""
-'            End If
-'        End Get
-'    End Property
-'    Public ReadOnly Property SSPP_Average As String
-'        Get
-'            If LocalPhoneCount() > 0 Or AllowIrrelevantValues = True Then
-'                Return Rounding(Word.SSPP_Average, , RoundingDecimals)
-'            Else
-'                Return ""
-'            End If
-'        End Get
-'    End Property
-
-'    Public ReadOnly Property SSPP_Min As String
-'        Get
-'            If LocalPhoneCount() > 0 Or AllowIrrelevantValues = True Then
-'                Return Rounding(Word.SSPP_Min, , RoundingDecimals)
-'            Else
-'                Return ""
-'            End If
-'        End Get
-'    End Property
-'    Public ReadOnly Property PSP_Sum As String
-'        Get
-'            If LocalPhoneCount() > 0 Or AllowIrrelevantValues = True Then
-'                Return Rounding(Word.PSP_Sum,, RoundingDecimals)
-'            Else
-'                Return ""
-'            End If
-'        End Get
-'    End Property
-
-'    Public ReadOnly Property PSBP_Sum As String
-'        Get
-'            If LocalPhoneCount() > 0 Or AllowIrrelevantValues = True Then
-'                Return Rounding(Word.PSBP_Sum,, RoundingDecimals)
-'            Else
-'                Return ""
-'            End If
-'        End Get
-'    End Property
-'    Public ReadOnly Property S_PSP_Average As String
-'        Get
-'            If LocalPhoneCount() > 0 Or AllowIrrelevantValues = True Then
-'                Return Rounding(Word.S_PSP_Average,, RoundingDecimals)
-'            Else
-'                Return ""
-'            End If
-'        End Get
-'    End Property
-
-'    Public ReadOnly Property S_PSBP_Average As String
-'        Get
-'            If LocalPhoneCount() > 0 Or AllowIrrelevantValues = True Then
-'                Return Rounding(Word.S_PSBP_Average,, RoundingDecimals)
-'            Else
-'                Return ""
-'            End If
-'        End Get
-'    End Property
-
-'    Public ReadOnly Property Homophones As String
-'        Get
-'            If Word.LanguageHomophones IsNot Nothing Then
-'                Return String.Join("|", Word.LanguageHomophones)
-'            Else
-'                Return ""
-'            End If
-'        End Get
-'    End Property
-
-'    Public ReadOnly Property PNDP As String
-'        Get
-'            If LocalPhoneCount() > 0 Or AllowIrrelevantValues = True Then
-'                Return Rounding(Word.FWPN_DensityProbability, , 3)
-'            Else
-'                Return ""
-'            End If
-'        End Get
-'    End Property
-
-'    Public ReadOnly Property PLD1Transcriptions As String
-'        Get
-'            If Word.PLD1Transcriptions.Count > 0 Then
-'                Return String.Join("|", Word.PLD1Transcriptions)
-'            Else
-'                Return ""
-'            End If
-'        End Get
-'    End Property
-
-'    Public ReadOnly Property ONDP As String
-'        Get
-'            Return Rounding(Word.FWON_DensityProbability, , 3)
-'        End Get
-'    End Property
-
-'    Public ReadOnly Property OLD1Spellings As String
-'        Get
-'            'Creating OLD1Spellings since they may not exist in all serialized versions...
-'            If Word.OLD1Spellings Is Nothing Then Word.OLD1Spellings = New List(Of String)
-
-'            If Word.OLD1Spellings.Count > 0 Then
-'                Return String.Join("|", Word.OLD1Spellings)
-'            Else
-'                Return ""
-'            End If
-'        End Get
-'    End Property
-
-'    Public ReadOnly Property PLDx_Average As String
-'        Get
-'            'Exporting PLDx_Average only if there exists PLDx words
-'            If Word.PLDxData.Count > 0 Then
-'                Return Rounding(Word.PLDx_Average, , RoundingDecimals)
-'            Else
-'                Return ""
-'            End If
-'        End Get
-'    End Property
-
-'    Public ReadOnly Property OLDx_Average As String
-'        Get
-'            If Word.OLDxData.Count > 0 Then
-'                Return Rounding(Word.OLDx_Average, , RoundingDecimals)
-'            Else
-'                Return ""
-'            End If
-'        End Get
-'    End Property
-
-'    Public ReadOnly Property PLDx_Neighbors As String
-'        Get
-'            'Creating PLDxData since it may not exist in all serialized versions...
-'            If Word.PLDxData Is Nothing Then Word.PLDxData = New List(Of Tuple(Of Integer, String, Single))
-
-'            If Word.PLDxData.Count > 0 Then
-'                Dim PLDxOutputList As New List(Of String)
-'                For i = 0 To Word.PLDxData.Count - 1
-'                    PLDxOutputList.Add(Word.PLDxData(i).Item1 & ":" & Word.PLDxData(i).Item2 & ":" & Word.PLDxData(i).Item3)
-'                Next
-'                Return String.Join("|", PLDxOutputList)
-'            Else
-'                Return ""
-'            End If
-'        End Get
-'    End Property
-
-'    Public ReadOnly Property OLDx_Neighbors As String
-'        Get
-'            'Creating OLDxData since it may not exist in all versions...
-'            If Word.OLDxData Is Nothing Then Word.OLDxData = New List(Of Tuple(Of Integer, String, Single))
-
-'            If Word.OLDxData.Count > 0 Then
-'                Dim OLDxOutputList As New List(Of String)
-'                For i = 0 To Word.OLDxData.Count - 1
-'                    OLDxOutputList.Add(Word.OLDxData(i).Item1 & ":" & Word.OLDxData(i).Item2 & ":" & Word.OLDxData(i).Item3)
-'                Next
-'                Return String.Join("|", OLDxOutputList)
-'            Else
-'                Return ""
-'            End If
-'        End Get
-'    End Property
-
-'    Public ReadOnly Property Sonographs As String
-'        Get
-'            If LocalPhoneCount() > 0 Or AllowIrrelevantValues = True Then
-
-'                Dim LocalSonographs As New List(Of String)
-'                For i = 0 To Word.Sonographs_Letters.Count - 1
-'                    LocalSonographs.Add(Word.Sonographs_Letters(i) & "-" & Word.Sonographs_Pronunciation(i))
-'                Next
-
-'                If LocalSonographs.Count > 0 Then
-'                    Return String.Join("|", LocalSonographs)
-'                Else
-'                    Return ""
-'                End If
-'            Else
-'                Return ""
-'            End If
-'        End Get
-'    End Property
-
-'    Public ReadOnly Property AllPoS As String
-'        Get
-'            If Word.ContainsWordListData = True Then
-'                'Preparing PoS string
-'                Dim PartsOfSpeechString As String = ""
-'                For PoS = 0 To Word.AllPossiblePoS.Count - 1
-'                    PartsOfSpeechString &= Word.AllPossiblePoS(PoS).Item1 & ":" & Rounding(Word.AllPossiblePoS(PoS).Item2, , 2) & "|"
-'                Next
-'                'Removes the last comma
-'                PartsOfSpeechString = PartsOfSpeechString.TrimEnd("|")
-
-'                'Writing PoS string
-'                Return PartsOfSpeechString
-'            Else
-'                Return ""
-'            End If
-'        End Get
-'    End Property
-
-'    Public ReadOnly Property AllLemmas As String
-'        Get
-'            If Word.ContainsWordListData = True Then
-'                'Preparing lemma string
-'                Dim LemmaString As String = ""
-'                For PoS = 0 To Word.AllOccurringLemmas.Count - 1
-'                    LemmaString &= Word.AllOccurringLemmas(PoS).Item1 & ":" & Rounding(Word.AllOccurringLemmas(PoS).Item2, , 2) & "|"
-'                Next
-'                'Removes the last comma
-'                LemmaString = LemmaString.TrimEnd("|")
-'                'Writing lemma string
-'                Return LemmaString
-'            Else
-'                Return ""
-'            End If
-'        End Get
-'    End Property
-
-'    Public ReadOnly Property NumberOfSenses As String
-'        Get
-'            If Word.ContainsWordListData = True Then
-'                If Word.NumberOfSenses > 0 Then
-'                    Return Word.NumberOfSenses
-'                Else
-'                    Return ""
-'                End If
-'            Else
-'                Return ""
-'            End If
-'        End Get
-'    End Property
-
-'    Public ReadOnly Property Abbreviation As String
-'        Get
-'            If Word.ContainsWordListData = True Then
-'                Return Word.Abbreviation
-'            Else
-'                Return ""
-'            End If
-'        End Get
-'    End Property
-
-'    Public ReadOnly Property Acronym As String
-'        Get
-'            If Word.ContainsWordListData = True Then
-'                Return Word.Acronym
-'            Else
-'                Return ""
-'            End If
-'        End Get
-'    End Property
-
-'    Public ReadOnly Property AllPossibleSenses As String
-'        Get
-'            If Word.AllPossibleSenses.Count > 0 Then
-'                Return String.Join("|", Word.AllPossibleSenses)
-'            Else
-'                Return ""
-'            End If
-'        End Get
-'    End Property
-
-'    'Public ReadOnly Property X As String
-'    '    Get
-
-'    '    End Get
-'    'End Property
-
-'    'Public ReadOnly Property X As String
-'    '    Get
-
-'    '    End Get
-'    'End Property
-
-'    'Public Sub t()
-
-'    '    'Creating phonemeArrays, only if LocalPhoneCount > 0 
-'    '    If LocalPhoneCount() > 0 Or AllowIrrelevantValues = True Then Word.GeneratePhoneticForms()
-
-'    '    '  "HomographCount" Then Return  LanguageHomographCount 
-
-'    '    'ReadOnly line (any data here is exported even if no ordinary phonetic transcription exists)
-'    '    '  "TemporarySyllabification" Then Return  String.Join(" ", BuildExtendedIpaArray(False,,,, True)) 
-
-'    '    '  "HomophoneCount" Then Return  LanguageHomophoneCount 
-
-
-
-
-
-
-
-
-
-
-
-
-
-'    '    '  "SSPP" Then
-
-'    '    If LocalPhoneCount() > 0 Or AllowIrrelevantValues = True Then
-
-'    '        If PP IsNot Nothing And PP_Phonemes IsNot Nothing Then
-
-'    '            Dim PhonoTacticCombination As New List(Of String)
-'    '            Dim i As Integer = 0
-'    '            For X = 0 To PP_Phonemes.Count - 1
-'    '                Dim probString As String = ""
-'    '                If Not i > PP_Phonemes.Count - 1 Then
-'    '                    probString = "[" & PP_Phonemes(i) & "] "
-'    '                End If
-'    '                If Not i > PP.Count - 1 Then
-'    '                    probString &= Rounding(PP(i),, 4)
-'    '                End If
-'    '                PhonoTacticCombination.Add(probString)
-'    '                i += 1
-'    '            Next
-
-'    '            'Adding also a word end string
-'    '            If Not i > PP_Phonemes.Count - 1 Then
-'    '                PhonoTacticCombination.Add("[" & PP_Phonemes(i) & "]")
-'    '            End If
-
-'    '            Return String.Join(" ", PhonoTacticCombination) 
-'    '        Else
-'    '            Return ""
-'    '        End If
-'    '    Else
-'    '        Return ""
-'    '    End If
-'    '    End If
-
-'    '    '  "PSP" Then
-
-'    '    If LocalPhoneCount() > 0 Or AllowIrrelevantValues = True Then
-
-'    '        If PSP IsNot Nothing And PSP_Phonemes IsNot Nothing Then
-
-'    '            Dim PhonoTacticCombination As New List(Of String)
-'    '            Dim i As Integer = 0
-'    '            For X = 0 To PSP_Phonemes.Count - 1
-'    '                Dim probString As String = ""
-'    '                If Not i > PSP_Phonemes.Count - 1 Then
-'    '                    probString = "[" & PSP_Phonemes(i) & "] "
-'    '                End If
-'    '                If Not i > PSP.Count - 1 Then
-'    '                    probString &= Rounding(PSP(i),, 4)
-'    '                End If
-'    '                PhonoTacticCombination.Add(probString)
-'    '                i += 1
-'    '            Next
-
-'    '            Return String.Join(" ", PhonoTacticCombination) 
-'    '        Else
-'    '            Return ""
-'    '        End If
-'    '    Else
-'    '        Return ""
-'    '    End If
-'    '    End If
-
-'    '    '  "PSBP" Then
-'    '    If LocalPhoneCount() > 0 Or AllowIrrelevantValues = True Then
-'    '        If PSBP IsNot Nothing And PSBP_Phonemes IsNot Nothing Then
-
-'    '            Dim PhonoTacticCombination As New List(Of String)
-'    '            Dim i As Integer = 0
-'    '            For X = 0 To PSBP_Phonemes.Count - 1
-'    '                Dim probString As String = ""
-'    '                If Not i > PSBP_Phonemes.Count - 1 Then
-'    '                    probString = "[" & PSBP_Phonemes(i) & "] "
-'    '                End If
-'    '                If Not i > PSBP.Count - 1 Then
-'    '                    probString &= Rounding(PSBP(i),, 6)
-'    '                End If
-'    '                PhonoTacticCombination.Add(probString)
-'    '                i += 1
-'    '            Next
-
-'    '            Return String.Join(" ", PhonoTacticCombination) 
-'    '        Else
-'    '            Return ""
-'    '        End If
-'    '    Else
-'    '        Return ""
-'    '    End If
-'    '    End If
-
-'    '    '  "S_PSP" Then
-'    '    If LocalPhoneCount() > 0 Or AllowIrrelevantValues = True Then
-'    '        If S_PSP IsNot Nothing And S_PSP_Phonemes IsNot Nothing Then
-
-'    '            Dim PhonoTacticCombination As New List(Of String)
-'    '            Dim i As Integer = 0
-'    '            For X = 0 To S_PSP_Phonemes.Count - 1
-'    '                Dim probString As String = ""
-'    '                If Not i > S_PSP_Phonemes.Count - 1 Then
-'    '                    probString = "[" & S_PSP_Phonemes(i) & "] "
-'    '                End If
-'    '                If Not i > S_PSP.Count - 1 Then
-'    '                    probString &= Rounding(S_PSP(i),, 4)
-'    '                End If
-'    '                PhonoTacticCombination.Add(probString)
-'    '                i += 1
-'    '            Next
-
-'    '            Return String.Join(" ", PhonoTacticCombination) 
-'    '        Else
-'    '            Return ""
-'    '        End If
-'    '    Else
-'    '        Return ""
-'    '    End If
-'    '    End If
-
-'    '    '  "S_PSBP" Then
-'    '    If LocalPhoneCount() > 0 Or AllowIrrelevantValues = True Then
-'    '        If S_PSBP IsNot Nothing And S_PSBP_Phonemes IsNot Nothing Then
-
-'    '            Dim PhonoTacticCombination As New List(Of String)
-'    '            Dim i As Integer = 0
-'    '            For X = 0 To S_PSBP_Phonemes.Count - 1
-'    '                Dim probString As String = ""
-'    '                If Not i > S_PSBP_Phonemes.Count - 1 Then
-'    '                    probString = "[" & S_PSBP_Phonemes(i) & "] "
-'    '                End If
-'    '                If Not i > S_PSBP.Count - 1 Then
-'    '                    probString &= Rounding(S_PSBP(i),, 6)
-'    '                End If
-'    '                PhonoTacticCombination.Add(probString)
-'    '                i += 1
-'    '            Next
-
-'    '            Return String.Join(" ", PhonoTacticCombination) 
-'    '        Else
-'    '            Return ""
-'    '        End If
-'    '    Else
-'    '        Return ""
-'    '    End If
-'    '    End If
-
-
-'    '    '  "GIL2P_OT" Then
-'    '    If LocalPhoneCount() > 0 Or AllowIrrelevantValues = True Then
-'    '        Dim GIL2P_OT_ExportValues As New List(Of Double)
-'    '        'Rounding the output values
-'    '        For r = 0 To GIL2P_OT.Count - 1
-'    '            GIL2P_OT_ExportValues.Add(Rounding(GIL2P_OT(r),, RoundingDecimals))
-'    '        Next
-
-'    '        If GIL2P_OT_ExportValues.Count > 0 Then
-'    '            Return String.Join(" ", GIL2P_OT_ExportValues) 
-'    '        Else
-'    '            Return ""
-'    '        End If
-'    '    Else
-'    '        Return ""
-'    '    End If
-'    '    End If
-
-'    '    '  "PIP2G_OT" Then
-'    '    If LocalPhoneCount() > 0 Or AllowIrrelevantValues = True Then
-'    '        Dim PIP2G_OT_ExportValues As New List(Of Double)
-'    '        'Rounding the output values
-'    '        For r = 0 To PIP2G_OT.Count - 1
-'    '            PIP2G_OT_ExportValues.Add(Rounding(PIP2G_OT(r),, RoundingDecimals))
-'    '        Next
-
-'    '        If PIP2G_OT_ExportValues.Count > 0 Then
-'    '            Return String.Join(" ", PIP2G_OT_ExportValues) 
-'    '        Else
-'    '            Return ""
-'    '        End If
-'    '    Else
-'    '        Return ""
-'    '    End If
-'    '    End If
-
-'    '    '  "G2P_OT" Then
-'    '    If LocalPhoneCount() > 0 Or AllowIrrelevantValues = True Then
-'    '        Dim SpellingProbability_g2p_ExportValues As New List(Of Double)
-'    '        'Rounding the spelling regularity values
-'    '        For r = 0 To G2P_OT.Count - 1
-'    '            SpellingProbability_g2p_ExportValues.Add(Rounding(G2P_OT(r),, RoundingDecimals))
-'    '        Next
-
-'    '        If SpellingProbability_g2p_ExportValues.Count > 0 Then
-'    '            Return String.Join(" ", SpellingProbability_g2p_ExportValues) 
-'    '        Else
-'    '            Return ""
-'    '        End If
-'    '    Else
-'    '        Return ""
-'    '    End If
-'    '    End If
-
-'    '    '  "ForeignWord" Then
-'    '    If ContainsWordListData = True Then
-'    '        Return ForeignWord 
-'    '    Else
-'    '        Return ""
-'    '    End If
-'    '    End If
-
-
-'    '    '  "ManuallyReveiwedCount" Then Return  ManuallyReveiwedCount 
-
-'    '    'The following data is output only, and are not read by the input parser
-'    '    '  "IPA" Then
-'    '    If LocalPhoneCount() > 0 Or AllowIrrelevantValues = True Then
-'    '        Return String.Join(" ", BuildExtendedIpaArray(,,,,, False, False)) 
-'    '    Else
-'    '        Return ""
-'    '    End If
-'    '    End If
-
-'    '    '  "ZipfValue" Then Return  Rounding(ZipfValue_Word,, 4) 
-'    '    '  "LetterCount" Then Return  OrthographicForm.Length 
-
-'    '    '  "GraphemeCount" Then
-'    '    If Sonographs_Letters IsNot Nothing Then
-'    '        Return Sonographs_Letters.Count 
-'    '    Else
-'    '        Return ""
-'    '    End If
-'    '    End If
-
-'    '    '  "DiGraphCount" Then
-'    '    If ContainsWordListData = True Then
-'    '        Return DiGraphCount 
-'    '    Else
-'    '        'Determining if data should be generated
-'    '        If Sonographs_Letters IsNot Nothing And GenerateLackingData = True Then
-'    '            CountComplexGraphemes()
-'    '            Return DiGraphCount 
-'    '        Else
-'    '            Return ""
-'    '        End If
-'    '    End If
-'    '    End If
-
-'    '    '  "TriGraphCount" Then
-'    '    If ContainsWordListData = True Then
-'    '        Return TriGraphCount 
-'    '    Else
-'    '        'Determining if data should be generated
-'    '        If Sonographs_Letters IsNot Nothing And GenerateLackingData = True Then
-'    '            CountComplexGraphemes()
-'    '            Return TriGraphCount 
-'    '        Else
-'    '            Return ""
-'    '        End If
-'    '    End If
-'    '    End If
-
-'    '    '  "LongGraphemesCount" Then
-'    '    If ContainsWordListData = True Then
-'    '        Return LongGraphemesCount 
-'    '    Else
-'    '        'Determining if data should be generated
-'    '        If Sonographs_Letters IsNot Nothing And GenerateLackingData = True Then
-'    '            CountComplexGraphemes()
-'    '            Return LongGraphemesCount 
-'    '        Else
-'    '            Return ""
-'    '        End If
-'    '    End If
-'    '    End If
-
-'    '    '  "SyllableCount" Then
-'    '    If LocalPhoneCount() > 0 Or AllowIrrelevantValues = True Then
-'    '        Return Syllables.Count 
-'    '    Else
-'    '        Return ""
-'    '    End If
-'    '    End If
-
-'    '    '  "Tone" Then
-'    '    If LocalPhoneCount() > 0 Or AllowIrrelevantValues = True Then
-'    '        Return Tone 
-'    '    Else
-'    '        Return ""
-'    '    End If
-'    '    End If
-
-'    '    '  "MainStressSyllable" Then
-'    '    If LocalPhoneCount() > 0 Or AllowIrrelevantValues = True Then
-'    '        Return MainStressSyllableIndex 
-'    '    Else
-'    '        Return ""
-'    '    End If
-'    '    End If
-
-'    '    '  "SecondaryStressSyllable" Then
-'    '    If LocalPhoneCount() > 0 Or AllowIrrelevantValues = True Then
-'    '        If SecondaryStressSyllableIndex <> 0 Then
-'    '            Return SecondaryStressSyllableIndex 
-'    '        Else
-'    '            Return ""
-'    '        End If
-'    '    Else
-'    '        Return ""
-'    '    End If
-'    '    End If
-
-'    '    '  "PhoneCount" Then
-'    '    If LocalPhoneCount() > 0 Or AllowIrrelevantValues = True Then
-'    '        Return LocalPhoneCount() 
-'    '    Else
-'    '        Return ""
-'    '    End If
-'    '    End If
-
-'    '    '  "PhoneCountZero" Then
-'    '    If LocalPhoneCount() > 0 Or AllowIrrelevantValues = True Then
-'    '        Return CountPhonemes(True, True) 
-'    '    Else
-'    '        Return ""
-'    '    End If
-'    '    End If
-
-'    '    '  "PLD1WordCount" Then
-'    '    If LocalPhoneCount() > 0 Or AllowIrrelevantValues = True Then
-'    '        Return PLD1WordCount 
-'    '    Else
-'    '        Return ""
-'    '    End If
-'    '    End If
-
-'    '    '  "OLD1WordCount" Then
-'    '    If LocalPhoneCount() > 0 Or AllowIrrelevantValues = True Then
-'    '        Return OLD1WordCount 
-'    '    Else
-'    '        Return ""
-'    '    End If
-'    '    End If
-
-'    '    '  "PossiblePoSCount" Then
-'    '    If ContainsWordListData = True Or AllowIrrelevantValues = True Then
-'    '        If AllPossiblePoS.Count > 0 Then
-'    '            Return AllPossiblePoS.Count 
-'    '        Else
-'    '            Return ""
-'    '        End If
-'    '    Else
-'    '        Return ""
-'    '    End If
-'    '    End If
-
-'    '    '  "MostCommonPoS" Then
-'    '    If ContainsWordListData = True Then
-'    '        If MostCommonPoS IsNot Nothing Then
-'    '            Return MostCommonPoS.Item1 & ":" & Rounding(MostCommonPoS.Item2, , RoundingDecimals) 
-'    '        Else
-'    '            Return ""
-'    '        End If
-'    '    Else
-'    '        Return ""
-'    '    End If
-'    '    End If
-
-'    '    '  "PossibleLemmaCount" Then
-'    '    If ContainsWordListData = True Or AllowIrrelevantValues = True Then
-'    '        If AllOccurringLemmas.Count > 0 Then
-'    '            Return AllOccurringLemmas.Count 
-'    '        Else
-'    '            Return ""
-'    '        End If
-'    '    Else
-'    '        Return ""
-'    '    End If
-'    '    End If
-
-'    '    '  "MostCommonLemma" Then
-'    '    If ContainsWordListData = True Then
-'    '        If MostCommonLemma IsNot Nothing Then
-'    '            Return MostCommonLemma.Item1 & ":" & Rounding(MostCommonLemma.Item2,, RoundingDecimals) 
-'    '        Else
-'    '            Return ""
-'    '        End If
-'    '    Else
-'    '        Return ""
-'    '    End If
-'    '    End If
-
-'    '    '  "ManualEvaluations" Then Return  String.Join("; ", ManualEvaluations).TrimEnd(";") 
-'    '    '  "ManualEvaluationsCount" Then Return  ManualEvaluations.Count 
-
-'    '    'Added 2019-08-14
-'    '    '  "OrthographicIsolationPoint" Then
-'    '    If OrthographicIsolationPoint >= 0 Or AllowIrrelevantValues = True Then
-'    '        Return OrthographicIsolationPoint 
-'    '    Else
-'    '        Return ""
-'    '    End If
-'    '    End If
-
-'    '    '  "PhoneticIsolationPoint" Then
-'    '    If PhoneticIsolationPoint >= 0 Or AllowIrrelevantValues = True Then
-'    '        Return PhoneticIsolationPoint 
-'    '    Else
-'    '        Return ""
-'    '    End If
-'    '    End If
-
-'    '    ColumnToWrite += 1
-'    '    End If
-'    '    End If
-'    '    Next
-
-
-
-
-'    'End Sub
-
-
-'End Class
 
 
 
