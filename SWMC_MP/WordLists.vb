@@ -2222,6 +2222,7 @@ Public Class WordGroup
             End If
 
             Dim CalculatedWordsCount As Integer = 0
+            Dim TempErrorString As String = ""
             For WordIndex = 0 To MemberWords.Count - 1
 
                 'Updating progress
@@ -2230,10 +2231,13 @@ Public Class WordGroup
                 Dim PLD1Transcription = MemberWords(WordIndex).BuildPLD1TypeTranscription
                 'Calculating PhoneticIsolationPoint only if the PLD1Transcription is longer than 2 segments (as the initial stressed syllable index and tone data is removed by the method called)
                 If PLD1Transcription.Count > 2 Then
-                    MemberWords(WordIndex).PhoneticIsolationPoint = PhoneticIsolationPointCalculator.GetIsolationPoint(MemberWords(WordIndex).BuildPLD1TypeTranscription, ErrorString)
+
+                    TempErrorString = ""
+                    MemberWords(WordIndex).PhoneticIsolationPoint = PhoneticIsolationPointCalculator.GetIsolationPoint(MemberWords(WordIndex).BuildPLD1TypeTranscription, TempErrorString)
                     CalculatedWordsCount += 1
 
-                    If ErrorString <> "" Then Errors(ErrorString)
+                    If TempErrorString <> "" Then Errors(TempErrorString)
+                    ErrorString &= TempErrorString
 
                 End If
             Next
@@ -2272,14 +2276,17 @@ Public Class WordGroup
             End If
 
             Dim CalculatedWordsCount As Integer = 0
+            Dim TempErrorString As String = ""
             For WordIndex = 0 To MemberWords.Count - 1
 
                 'Updating progress
                 If IsRunOnServer = False Then myProgress.UpdateProgress(WordIndex)
 
+                TempErrorString = ""
                 MemberWords(WordIndex).OrthographicIsolationPoint = OrthographicIsolationPointCalculator.GetIsolationPoint(MemberWords(WordIndex).OrthographicForm, ErrorString)
 
-                If ErrorString <> "" Then Errors(ErrorString)
+                If TempErrorString <> "" Then Errors(TempErrorString)
+                ErrorString &= TempErrorString
 
             Next
 

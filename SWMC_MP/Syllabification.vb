@@ -63,117 +63,131 @@ Public Class Syllabification
 
         End Sub
 
-        ''' <summary>
-        ''' Resyllabifies the words in the input wordlist.
-        ''' </summary>
-        ''' <param name="InputWordGroup"></param>
-        ''' <param name="PutNewSyllabificationInAlternateSyllabification">If set to False, the new syllabification will replace the old WordGroup.MemberWords.Word.Syllables. If set to True the new syllabifications are stored in WordGroups.MemberWords.Syllables_AlternateSyllabification.</param>
-        Public Sub Syllabify(ByRef InputWordGroup As WordGroup, Optional ByRef PutNewSyllabificationInAlternateSyllabification As Boolean = False)
+    ''' <summary>
+    ''' Resyllabifies the words in the input wordlist. Returns False if syllabification failed.
+    ''' </summary>
+    ''' <param name="InputWordGroup"></param>
+    ''' <param name="PutNewSyllabificationInAlternateSyllabification">If set to False, the new syllabification will replace the old WordGroup.MemberWords.Word.Syllables. If set to True the new syllabifications are stored in WordGroups.MemberWords.Syllables_AlternateSyllabification.</param>
+    Public Function Syllabify(ByRef InputWordGroup As WordGroup, Optional ByRef PutNewSyllabificationInAlternateSyllabification As Boolean = False) As Boolean
 
-            Dim myProgress As New ProgressDisplay
-            'Starting a progress window
-            myProgress.Initialize(InputWordGroup.MemberWords.Count - 1, 0, "Updating transcriptions ", 100)
-            myProgress.Show()
+        Dim myProgress As New ProgressDisplay
+        'Starting a progress window
+        myProgress.Initialize(InputWordGroup.MemberWords.Count - 1, 0, "Updating transcriptions ", 100)
+        myProgress.Show()
 
-            'Creating phonetic forms
-            For word = 0 To InputWordGroup.MemberWords.Count - 1
+        'Creating phonetic forms
+        For word = 0 To InputWordGroup.MemberWords.Count - 1
 
-                'Updating progress
-                myProgress.UpdateProgress(word)
+            'Updating progress
+            myProgress.UpdateProgress(word)
 
-                InputWordGroup.MemberWords(word).Phonemes = InputWordGroup.MemberWords(word).BuildExtendedIpaArray(,,,,, False, False)
+            InputWordGroup.MemberWords(word).Phonemes = InputWordGroup.MemberWords(word).BuildExtendedIpaArray(,,,,, False, False)
 
-            Next
-            myProgress.Close()
-
-
-            'Starting a progress window
-            myProgress = New ProgressDisplay
-            myProgress.Initialize(InputWordGroup.MemberWords.Count - 1, 0, "Performing syllabification ", 100)
-            myProgress.Show()
-
-            'Syllabification
-            For word = 0 To InputWordGroup.MemberWords.Count - 1
-
-                'Updating progress
-                myProgress.UpdateProgress(word)
-
-                'Creating an empty Syllable Skipping words that have no phonetic transcription (added 2017-11-07, in order to handle words added on the website without phonetic transcription)
-                If InputWordGroup.MemberWords(word).Phonemes.Count = 0 Then
-
-                    If PutNewSyllabificationInAlternateSyllabification = False Then
-                        InputWordGroup.MemberWords(word).Syllables = New Word.ListOfSyllables
-                    Else
-                        InputWordGroup.MemberWords(word).Syllables_AlternateSyllabification = New Word.ListOfSyllables
-                    End If
-
-                    Continue For
-                End If
+        Next
+        myProgress.Close()
 
 
-                Dim ContainsSegmentationGuessing As Boolean = False
-                Dim ContainsUnparsableCluster As Boolean = False
+        'Starting a progress window
+        myProgress = New ProgressDisplay
+        myProgress.Initialize(InputWordGroup.MemberWords.Count - 1, 0, "Performing syllabification ", 100)
+        myProgress.Show()
 
+        'Syllabification
+        For word = 0 To InputWordGroup.MemberWords.Count - 1
 
-                'Doing syllabification
+            'Updating progress
+            myProgress.UpdateProgress(word)
+
+            'Creating an empty Syllable Skipping words that have no phonetic transcription (added 2017-11-07, in order to handle words added on the website without phonetic transcription)
+            If InputWordGroup.MemberWords(word).Phonemes.Count = 0 Then
+
                 If PutNewSyllabificationInAlternateSyllabification = False Then
-
-                    Dim OriginalSyllables As Word.ListOfSyllables = InputWordGroup.MemberWords(word).Syllables.CreateCopy
-
-                    InputWordGroup.MemberWords(word).Syllables = CreateSyllabification(InputWordGroup.MemberWords(word).Phonemes, ContainsSegmentationGuessing, ContainsUnparsableCluster)
-
-                    'Updating suprasegmentals to the new values
-                    InputWordGroup.MemberWords(word).Tone = InputWordGroup.MemberWords(word).Syllables.Tone
-                    InputWordGroup.MemberWords(word).MainStressSyllableIndex = InputWordGroup.MemberWords(word).Syllables.MainStressSyllableIndex
-                    InputWordGroup.MemberWords(word).SecondaryStressSyllableIndex = InputWordGroup.MemberWords(word).Syllables.SecondaryStressSyllableIndex
-
-                    'Checking if the two types of syllabification has the same length
-                    If Not OriginalSyllables.Count = InputWordGroup.MemberWords(word).Syllables.Count Then
-                        SendInfoToLog("New syllabification: " & vbTab & String.Join(" ", InputWordGroup.MemberWords(word).BuildExtendedIpaArray), "SyllabificationsWithAlteredLengths")
-                    End If
-
-                    'Exporting "guessings"
-                    If ContainsSegmentationGuessing = True Then
-                        SendInfoToLog(String.Join(" ", InputWordGroup.MemberWords(word).Phonemes.ToArray) & vbTab &
-                                      String.Join(" ", InputWordGroup.MemberWords(word).BuildExtendedIpaArray()), "SyllablificationGuessingClusters")
-                    End If
-
-                    'Exporting unparsable cluster words
-                    If ContainsUnparsableCluster = True Then
-                        SendInfoToLog(String.Join(" ", InputWordGroup.MemberWords(word).Phonemes.ToArray) & vbTab &
-                                      String.Join(" ", InputWordGroup.MemberWords(word).BuildExtendedIpaArray(,,,, True)), "SyllablificationUnparsedCluster")
-                    End If
-
+                    InputWordGroup.MemberWords(word).Syllables = New Word.ListOfSyllables
                 Else
-
-                    InputWordGroup.MemberWords(word).Syllables_AlternateSyllabification = CreateSyllabification(InputWordGroup.MemberWords(word).Phonemes, ContainsSegmentationGuessing, ContainsUnparsableCluster)
-
-                    'Checking if the two types of syllabification has the same length
-                    If Not InputWordGroup.MemberWords(word).Syllables.Count = InputWordGroup.MemberWords(word).Syllables_AlternateSyllabification.Count Then
-                        SendInfoToLog("Original: " & vbTab & String.Join(" ", InputWordGroup.MemberWords(word).BuildExtendedIpaArray) & vbTab &
-                                          "Alternate:" & vbTab & String.Join(" ", InputWordGroup.MemberWords(word).BuildExtendedIpaArray(,,,, True)), "SyllabificationsWithAlteredLengths")
-                    End If
-
-                    'Exporting "guessings"
-                    If ContainsSegmentationGuessing = True Then
-                        SendInfoToLog(String.Join(" ", InputWordGroup.MemberWords(word).Phonemes.ToArray) & vbTab &
-                                          String.Join(" ", InputWordGroup.MemberWords(word).BuildExtendedIpaArray(,,,, True)), "SyllablificationGuessingClusters")
-                    End If
-
-                    'Exporting unparsable cluster words
-                    If ContainsUnparsableCluster = True Then
-                        SendInfoToLog(String.Join(" ", InputWordGroup.MemberWords(word).Phonemes.ToArray) & vbTab &
-                                      String.Join(" ", InputWordGroup.MemberWords(word).BuildExtendedIpaArray(,,,, True)), "SyllablificationUnparsedCluster")
-                    End If
+                    InputWordGroup.MemberWords(word).Syllables_AlternateSyllabification = New Word.ListOfSyllables
                 End If
-            Next
 
-            'Closing the progress display
-            myProgress.Close()
+                Continue For
+            End If
 
-        End Sub
 
-        Public Sub CollectWordInitialAndFinalClusters(ByRef InputWordGroup As WordGroup,
+            Dim ContainsSegmentationGuessing As Boolean = False
+            Dim ContainsUnparsableCluster As Boolean = False
+
+
+            'Doing syllabification
+            If PutNewSyllabificationInAlternateSyllabification = False Then
+
+                Dim OriginalSyllables As Word.ListOfSyllables = InputWordGroup.MemberWords(word).Syllables.CreateCopy
+
+                InputWordGroup.MemberWords(word).Syllables = CreateSyllabification(InputWordGroup.MemberWords(word).Phonemes, ContainsSegmentationGuessing, ContainsUnparsableCluster)
+
+                If InputWordGroup.MemberWords(word).Syllables Is Nothing Then
+                    SendInfoToLog("Syllabification failed for word: " & InputWordGroup.MemberWords(word).OrthographicForm & String.Join(" ", InputWordGroup.MemberWords(word).BuildExtendedIpaArray))
+                    InputWordGroup.MemberWords(word).ManualEvaluations.Add("Syllabification failure!")
+                    Return False
+                End If
+
+                'Updating suprasegmentals to the new values
+                InputWordGroup.MemberWords(word).Tone = InputWordGroup.MemberWords(word).Syllables.Tone
+                InputWordGroup.MemberWords(word).MainStressSyllableIndex = InputWordGroup.MemberWords(word).Syllables.MainStressSyllableIndex
+                InputWordGroup.MemberWords(word).SecondaryStressSyllableIndex = InputWordGroup.MemberWords(word).Syllables.SecondaryStressSyllableIndex
+
+                'Checking if the two types of syllabification has the same length
+                If Not OriginalSyllables.Count = InputWordGroup.MemberWords(word).Syllables.Count Then
+                    SendInfoToLog("New syllabification: " & vbTab & String.Join(" ", InputWordGroup.MemberWords(word).BuildExtendedIpaArray), "SyllabificationsWithAlteredLengths")
+                End If
+
+                'Exporting "guessings"
+                If ContainsSegmentationGuessing = True Then
+                    SendInfoToLog(String.Join(" ", InputWordGroup.MemberWords(word).Phonemes.ToArray) & vbTab &
+                                      String.Join(" ", InputWordGroup.MemberWords(word).BuildExtendedIpaArray()), "SyllablificationGuessingClusters")
+                End If
+
+                'Exporting unparsable cluster words
+                If ContainsUnparsableCluster = True Then
+                    SendInfoToLog(String.Join(" ", InputWordGroup.MemberWords(word).Phonemes.ToArray) & vbTab &
+                                      String.Join(" ", InputWordGroup.MemberWords(word).BuildExtendedIpaArray(,,,, True)), "SyllablificationUnparsedCluster")
+                End If
+
+            Else
+
+                InputWordGroup.MemberWords(word).Syllables_AlternateSyllabification = CreateSyllabification(InputWordGroup.MemberWords(word).Phonemes, ContainsSegmentationGuessing, ContainsUnparsableCluster)
+
+                If InputWordGroup.MemberWords(word).Syllables_AlternateSyllabification Is Nothing Then
+                    SendInfoToLog("Syllabification failed for word: " & InputWordGroup.MemberWords(word).OrthographicForm & String.Join(" ", InputWordGroup.MemberWords(word).BuildExtendedIpaArray))
+                    InputWordGroup.MemberWords(word).ManualEvaluations.Add("Syllabification failure!")
+                    Return False
+                End If
+
+                'Checking if the two types of syllabification has the same length
+                If Not InputWordGroup.MemberWords(word).Syllables.Count = InputWordGroup.MemberWords(word).Syllables_AlternateSyllabification.Count Then
+                    SendInfoToLog("Original: " & vbTab & String.Join(" ", InputWordGroup.MemberWords(word).BuildExtendedIpaArray) & vbTab &
+                                          "Alternate:" & vbTab & String.Join(" ", InputWordGroup.MemberWords(word).BuildExtendedIpaArray(,,,, True)), "SyllabificationsWithAlteredLengths")
+                End If
+
+                'Exporting "guessings"
+                If ContainsSegmentationGuessing = True Then
+                    SendInfoToLog(String.Join(" ", InputWordGroup.MemberWords(word).Phonemes.ToArray) & vbTab &
+                                          String.Join(" ", InputWordGroup.MemberWords(word).BuildExtendedIpaArray(,,,, True)), "SyllablificationGuessingClusters")
+                End If
+
+                'Exporting unparsable cluster words
+                If ContainsUnparsableCluster = True Then
+                    SendInfoToLog(String.Join(" ", InputWordGroup.MemberWords(word).Phonemes.ToArray) & vbTab &
+                                      String.Join(" ", InputWordGroup.MemberWords(word).BuildExtendedIpaArray(,,,, True)), "SyllablificationUnparsedCluster")
+                End If
+            End If
+        Next
+
+        'Closing the progress display
+        myProgress.Close()
+
+        Return True
+
+    End Function
+
+    Public Sub CollectWordInitialAndFinalClusters(ByRef InputWordGroup As WordGroup,
                                                           ByRef FrequencyWeightingUnit As WordGroup.WordFrequencyUnit,
                                                           ByRef IgnoreZeroFrequencyWords As Boolean,
                                                           ByRef InferLengthLessConsonants As Boolean,
@@ -593,6 +607,8 @@ Public Class Syllabification
         Public Function CreateSyllabification(ByRef InputPhonemes As List(Of String),
                                                   Optional ByRef ContainsSegmentationGuessing As Boolean = False,
                                                   Optional ByRef ContainsUnparsableCluster As Boolean = False) As Word.ListOfSyllables
+
+        Try
 
             'Making sure that CollectWordInitialAndFinalClusters is properly run
             If WordInitialOnSetClusters Is Nothing Or WordFinalCodaClusters Is Nothing Or WordMedialClusters Is Nothing Then
@@ -1048,7 +1064,11 @@ Public Class Syllabification
 
             Return NewSyllables
 
-        End Function
+        Catch ex As Exception
+            Return Nothing
+        End Try
+
+    End Function
 
 
 

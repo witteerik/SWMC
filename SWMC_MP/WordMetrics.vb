@@ -70,7 +70,7 @@ Public Class WordMetricsCalculation
     Public Function CalculateWordMetrics(ByVal InputWords() As String,
                                          Optional ByVal CalculateOrthographicTransparency As Boolean = True,
                                          Optional ByVal UseTempSpellingChanges As Boolean = False,
-                                         Optional ByRef TemporarySpellingChangeListArray() As String = Nothing,
+                                         Optional ByVal TemporarySpellingChangeListArray() As String = Nothing,
                                          Optional ByVal CalculatePhonotacticProbability As Boolean = True,
                                          Optional ByVal CalculatePhoneticNeighborhoodDensity As Boolean = True,
                                          Optional ByVal CalculateOrthographicNeighborhoodDensity As Boolean = True,
@@ -83,14 +83,14 @@ Public Class WordMetricsCalculation
                                          Optional ByVal AddInputWordsToComparisonLists As Boolean = True,
                                          Optional ByRef ListOfInvalidPhoneticCharacterWords As List(Of String) = Nothing,
                                          Optional ByRef OtherPhoneticErrorWords As List(Of String) = Nothing,
-                                         Optional ByRef CorrectDoubleSpacesInTranscription As Boolean = True,
-                                         Optional ByRef CheckPhonemeValidity As Boolean = True,
-                                         Optional ByRef CheckTranscriptionStructure As Boolean = True,
-                                         Optional ByRef p2g_Settings As p2gParameters = Nothing,
-                                         Optional ByRef Unresolved_p2g_Character As String = "!",
+                                         Optional ByVal CorrectDoubleSpacesInTranscription As Boolean = True,
+                                         Optional ByVal CheckPhonemeValidity As Boolean = True,
+                                         Optional ByVal CheckTranscriptionStructure As Boolean = True,
+                                         Optional ByVal p2g_Settings As p2gParameters = Nothing,
+                                         Optional ByVal Unresolved_p2g_Character As String = "!",
                                          Optional ByRef FatalErrorDescription As String = "",
-                                         Optional ByRef DoAfcListLookup As Boolean = True,
-                                         Optional ByRef DontExportAnything As Boolean = True,
+                                         Optional ByVal DoAfcListLookup As Boolean = True,
+                                         Optional ByVal DontExportAnything As Boolean = True,
                                          Optional ByVal IsRunFromServer As Boolean = False) As WordGroup
 
 
@@ -518,20 +518,26 @@ Public Class WordMetricsCalculation
                 InputWordGroup.ChangeAmbiSyllabicLongConsonantPositions(WordGroup.LongConsonantPositions.SyllableCoda, False)
 
                 'Doing resyllabification into the alternate syllable structures (only used for the SSPP type)
-                SyllabificationTool.Syllabify(InputWordGroup, True)
+                If SyllabificationTool.Syllabify(InputWordGroup, True) = True Then
 
-                'Calculating SSPP phonotactic probability
-                SSPP_Data.TransitionData(PhonotacticTransitionDataDirections.RetrievePhonotacticProbabilities, InputWordGroup,,, False)
+                    'Calculating SSPP phonotactic probability
+                    SSPP_Data.TransitionData(PhonotacticTransitionDataDirections.RetrievePhonotacticProbabilities, InputWordGroup,,, False)
 
-                'Calculating positional phonotactics - monogram and biphone probabilities
+                    'Calculating positional phonotactics - monogram and biphone probabilities
 
-                'Normal type
-                PSP_Data.TransitionData(PhonotacticTransitionDataDirections.RetrievePhonotacticProbabilities, InputWordGroup, , ,,,, False)
-                PSBP_Data.TransitionData(PhonotacticTransitionDataDirections.RetrievePhonotacticProbabilities, InputWordGroup, , ,,,, False)
+                    'Normal type
+                    PSP_Data.TransitionData(PhonotacticTransitionDataDirections.RetrievePhonotacticProbabilities, InputWordGroup, , ,,,, False)
+                    PSBP_Data.TransitionData(PhonotacticTransitionDataDirections.RetrievePhonotacticProbabilities, InputWordGroup, , ,,,, False)
 
-                'Z-transformed type
-                PSP_Data.TransitionData(PhonotacticTransitionDataDirections.RetrievePhonotacticProbabilities, InputWordGroup, , ,,,, True)
-                PSBP_Data.TransitionData(PhonotacticTransitionDataDirections.RetrievePhonotacticProbabilities, InputWordGroup, , ,,,, True)
+                    'Z-transformed type
+                    PSP_Data.TransitionData(PhonotacticTransitionDataDirections.RetrievePhonotacticProbabilities, InputWordGroup, , ,,,, True)
+                    PSBP_Data.TransitionData(PhonotacticTransitionDataDirections.RetrievePhonotacticProbabilities, InputWordGroup, , ,,,, True)
+
+                Else
+
+                    FatalErrorDescription &= "Syllabification failed for one or more words. Therefore unable to calculate phonotactic probability. Look in the column ManualEvaluations to find out for which words this problem occurred."
+
+                End If
 
             Catch ex As Exception
                 FatalErrorDescription = ex.ToString
@@ -592,9 +598,11 @@ Public Class WordMetricsCalculation
             Try
 
                 'Calculating PLD1 and optionally PLDx, based on the loaded comparison corpus
-                InputWordGroup.Calculate_PLD_UsingComparisonCorpus(PLDComparisonCorpus, ,, FatalErrorDescription, CalculatePLDx, PLDxCount)
+                Dim tempFatalError As String = ""
+                InputWordGroup.Calculate_PLD_UsingComparisonCorpus(PLDComparisonCorpus, ,, tempFatalError, CalculatePLDx, PLDxCount)
 
-                If FatalErrorDescription <> "" Then
+                FatalErrorDescription &= tempFatalError
+                If tempFatalError <> "" Then
                     Return False
                 End If
 
