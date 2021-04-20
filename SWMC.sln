@@ -8,9 +8,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{778DAE3C-4631-46EA-AA77-85C1314464D9}") = "SWMC_MP", "SWMC_MP\SWMC_MP.vbproj", "{29CA69E0-9541-4819-9EFD-DED23C963674}"
+Project("{778DAE3C-4631-46EA-AA77-85C1314464D9}") = "SWMC", "SWMC\SWMC.vbproj", "{29CA69E0-9541-4819-9EFD-DED23C963674}"
 EndProject
-Project("{778DAE3C-4631-46EA-AA77-85C1314464D9}") = "ConsoleTestingApp_MP", "ConsoleTestingApp_MP\ConsoleTestingApp_MP.vbproj", "{E2A21ED7-7D8D-4149-89AB-6B65812971A4}"
+Project("{778DAE3C-4631-46EA-AA77-85C1314464D9}") = "ConsoleTestingApp", "ConsoleTestingApp\ConsoleTestingApp.vbproj", "{E2A21ED7-7D8D-4149-89AB-6B65812971A4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

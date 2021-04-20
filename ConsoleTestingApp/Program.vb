@@ -4,13 +4,13 @@ Module Program
     Sub Main(args As String())
 
         'Creates a new instance of WordMetricsCalculation
-        Dim MWC As New SWMC_MP.WordMetricsCalculation()
+        Dim MWC As New SWMC.WordMetricsCalculation()
 
         'Creates an array of (lower case) words for which to calculate word metrics
         Dim InputWords As String() = {"hej", "du"}
 
         Dim Hits As Integer = 0
-        Dim testLookUp = SWMC_MP.AfcListSearch.SearchAfcList("SELECT * FROM AfcList WHERE OrthographicForm LIKE 'hej';", Hits)
+        Dim testLookUp = SWMC.AfcListSearch.SearchAfcList("SELECT * FROM AfcList WHERE OrthographicForm LIKE 'hej';", Hits)
 
         'Calculates the word metrics of the input words
         Dim Output = MWC.CalculateWordMetrics(InputWords)
@@ -21,7 +21,7 @@ Module Program
         Dim bcw = ntow.ConvertToWord(ErrorList)
 
         'Sets up a column order for the output data
-        Dim ColumnOrder = New SWMC_MP.WordListsIO.PhoneticTxtStringColumnIndices
+        Dim ColumnOrder = New SWMC.WordListsIO.PhoneticTxtStringColumnIndices
         ColumnOrder.SetWebSiteColumnOrder(False, True, True, True, True, True, True, True, True)
 
         'Displays the result in the console
