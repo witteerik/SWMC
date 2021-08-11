@@ -1308,6 +1308,7 @@ Public Class GraphemeToPhonemes
             Next
 
         Catch ex As Exception
+            Console.WriteLine(ex.ToString)
             Return Nothing
         End Try
 

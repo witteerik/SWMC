@@ -16,6 +16,8 @@ Public Class WordMetricsCalculation
     Public Sub New(ByVal mysql_server As String, ByVal mysql_uid As String, ByVal mysql_pwd As String, ByVal mysql_database As String,
                    Optional ByVal CustomSpeechDataLocation As String = "")
 
+        SetupCulture()
+
         Me.CustumSpeechDataLocation = CustomSpeechDataLocation
 
         'Set the global variable AfcListMySqlConnectionString to prepares for server connection
@@ -32,6 +34,8 @@ Public Class WordMetricsCalculation
     ''' <param name="CustomSpeechDataLocation">The location of custom speech data read from text files. Leave to "" to use the embedded speech data.</param>
     Public Sub New(Optional ByVal SetupDefaultSqlConnection As Boolean = True, Optional ByVal CustomSpeechDataLocation As String = "")
 
+        SetupCulture()
+
         Me.CustumSpeechDataLocation = CustomSpeechDataLocation
 
         'Set the global variable AfcListMySqlConnectionString to prepares for server connection
@@ -39,6 +43,21 @@ Public Class WordMetricsCalculation
 
         'Creating list of valid phonetic characters
         ValidPhoneticCharacters = CreateListOfValidPhoneticCharactersForSwedish()
+
+    End Sub
+
+    Public Shared Sub SetupCulture()
+
+        Try
+            System.Threading.Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.CreateSpecificCulture("sv-SE")
+            'System.Threading.Thread.CurrentThread.CurrentUICulture = System.Globalization.CultureInfo.CreateSpecificCulture("sv-SE")
+            'System.Threading.Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture
+        Catch ex As Exception
+            Console.WriteLine("Warning: Unavailable language pack. The local computer may lack some required language components! You can continue running the program but it may not function correctly!")
+        End Try
+
+        'Setting the negative sign to hyphen (as this seem to be different in Linux!)
+        Threading.Thread.CurrentThread.CurrentCulture.NumberFormat.NegativeSign = "-"
 
     End Sub
 
@@ -93,6 +112,8 @@ Public Class WordMetricsCalculation
                                          Optional ByVal DontExportAnything As Boolean = True,
                                          Optional ByVal IsRunFromServer As Boolean = False) As WordGroup
 
+        'Calls SetupCulture to ensure correct settings upon every call
+        SetupCulture()
 
         'Creates a new list of Tuple of strings, containing spelling and phonetic transcription
         Dim InputSpellingAndTranscription As New List(Of Tuple(Of String, String, Single?))
@@ -218,6 +239,8 @@ Public Class WordMetricsCalculation
                                          Optional ByRef DontExportAnything As Boolean = True,
                                          Optional ByVal IsRunFromServer As Boolean = False) As WordGroup
 
+        'Calls SetupCulture to ensure correct settings upon every call
+        SetupCulture()
 
         'Making sure we have a list of valid phonetic characters
         If CheckPhonemeValidity = True And ValidPhoneticCharacters Is Nothing Then
@@ -351,6 +374,9 @@ Public Class WordMetricsCalculation
                                          Optional ByRef FatalErrorDescription As String = "",
                                          Optional ByRef DontExportAnything As Boolean = True,
                                          Optional ByVal IsRunOnServer As Boolean = False) As Boolean
+
+        'Calls SetupCulture to ensure correct settings upon every call
+        SetupCulture()
 
         'Forcing calculation of ND if LDx is set to true
         If CalculatePLDx = True Then CalculatePhoneticNeighborhoodDensity = True
@@ -710,6 +736,9 @@ Public Class WordMetricsCalculation
     Public Function AfcListLookup(ByRef InputWordGroup As WordGroup,
                                   Optional ByRef FatalErrorDescription As String = "")
 
+        'Calls SetupCulture to ensure correct settings upon every call
+        SetupCulture()
+
         Try
 
             Dim AfcListConnection = New MySqlConnection(AfcListMySqlConnectionString)
@@ -929,6 +958,8 @@ Public Class WordMetricsCalculation
     Private Sub CalculateBasicDataForWordNotInAfcList(ByRef InputWordGroup As WordGroup,
                                   Optional ByRef FatalErrorDescription As String = "")
 
+        'Calls SetupCulture to ensure correct settings upon every call
+        SetupCulture()
 
         For word = 0 To InputWordGroup.MemberWords.Count - 1
 
@@ -1043,6 +1074,9 @@ Public Module AfcListSearch
                                   Optional ByRef FatalErrorDescription As String = "",
                                   ByVal Optional IndexOfFirstHit As Integer = 0,
                                   ByVal Optional MaxNumberOfHits As Integer = Integer.MaxValue) As List(Of TextOnlyWord)
+
+        'Calls SetupCulture to ensure correct settings upon every call
+        WordMetricsCalculation.SetupCulture()
 
         Try
 

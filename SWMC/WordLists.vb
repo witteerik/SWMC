@@ -18,6 +18,9 @@ Public Module WordListsIO
     ''' <returns></returns>
     Public Function CreateListOfValidPhoneticCharactersForSwedish() As List(Of String)
 
+        'Calls SetupCulture to ensure correct settings upon every call
+        WordMetricsCalculation.SetupCulture()
+
         'Creating a list of valid phonetic characters
         Dim ValidPhoneticCharacters As New List(Of String)
         For p = 0 To SwedishConsonants_IPA.Count - 1
