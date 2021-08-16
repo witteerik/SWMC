@@ -1213,5 +1213,224 @@ Public Module AfcListSearch
     End Function
 
 
+    Public Function CreateExcelFile(ByVal SearchResult As List(Of TextOnlyWord), ByVal SearchErrors As String, ByVal SqlQuery As String, ByVal IndexOfFirstHit As Integer, ByVal TotalNumberOfHits As Integer, ByRef FatalErrors As String) As Byte()
+
+
+        Try
+
+            'System.Threading.Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture
+            'System.Threading.Thread.CurrentThread.CurrentUICulture = System.Globalization.CultureInfo.InvariantCulture
+
+            'Storing the output data in an Excel document using SpreadsheetLight
+            'Adding calculation errors to the first sheet
+            Dim ExcelDocument = New SpreadsheetLight.SLDocument()
+            ExcelDocument.RenameWorksheet(SpreadsheetLight.SLDocument.DefaultFirstSheetName, "Search details")
+
+            ExcelDocument.ApplyNamedCellStyle(1, 1, SpreadsheetLight.SLNamedCellStyleValues.Heading4)
+            ExcelDocument.SetCellValue(1, 1, "Search Details:")
+            ExcelDocument.SetCellValue(2, 1, " (You'll find the results in the next worksheet.)")
+
+            ExcelDocument.SetCellValue(4, 1, "SQL-questy used: ")
+            ExcelDocument.SetCellValue(4, 2, SqlQuery)
+
+            ExcelDocument.SetCellValue(5, 1, "Downloaded " & SearchResult.Count & " of " & TotalNumberOfHits & " hits.")
+
+            ExcelDocument.SetCellValue(6, 1, "The index of the first presented hit is: ")
+            ExcelDocument.SetCellValue(6, 2, IndexOfFirstHit)
+
+            ExcelDocument.SetCellValue(7, 1, "The number of downloaded hits was limited to: ")
+            ExcelDocument.SetCellValue(7, 2, TotalNumberOfHits)
+
+            If SearchErrors.Trim.Length > 0 Then
+                ExcelDocument.SetCellValue(9, 1, "The following error occured:")
+                ExcelDocument.SetCellValue(9, 2, SearchErrors)
+            End If
+
+            'Adding output data to the next sheet
+            ExcelDocument.AddWorksheet("Search results")
+
+            'Adding headings
+            Dim HeadingList As New List(Of String)
+            HeadingList.Add("OrthographicForm")
+            HeadingList.Add("PhoneticForm")
+            HeadingList.Add("PhonotacticType")
+            HeadingList.Add("SyllableCount")
+            HeadingList.Add("PhoneCount")
+            HeadingList.Add("ZipfValue")
+            HeadingList.Add("RawWordTypeFrequency")
+            HeadingList.Add("RawDocumentCount")
+            HeadingList.Add("PLD1WordCount")
+            HeadingList.Add("OLD1WordCount")
+            HeadingList.Add("PNDP")
+            HeadingList.Add("ONDP")
+            HeadingList.Add("GIL2P_OT_Average")
+            HeadingList.Add("GIL2P_OT_Min")
+            HeadingList.Add("PIP2G_OT_Average")
+            HeadingList.Add("PIP2G_OT_Min")
+            HeadingList.Add("G2P_OT_Average")
+            HeadingList.Add("SSPP_Average")
+            HeadingList.Add("SSPP_Min")
+            HeadingList.Add("PSP_Sum")
+            HeadingList.Add("PSBP_Sum")
+            HeadingList.Add("S_PSP_Average")
+            HeadingList.Add("S_PSBP_Average")
+            HeadingList.Add("LetterCount")
+            HeadingList.Add("GraphemeCount")
+            HeadingList.Add("DiGraphCount")
+            HeadingList.Add("TriGraphCount")
+            HeadingList.Add("LongGraphemesCount")
+            HeadingList.Add("SpecialCharacter")
+            HeadingList.Add("UpperCase")
+            HeadingList.Add("ForeignWord")
+            HeadingList.Add("Abbreviation")
+            HeadingList.Add("Acronym")
+            HeadingList.Add("HomographCount")
+            HeadingList.Add("HomophoneCount")
+            HeadingList.Add("NumberOfSenses")
+            HeadingList.Add("ReducedTranscription")
+            HeadingList.Add("Sonographs")
+            HeadingList.Add("Homographs")
+            HeadingList.Add("Homophones")
+            HeadingList.Add("AllPoS")
+            HeadingList.Add("AllLemmas")
+            HeadingList.Add("Tone")
+            HeadingList.Add("MainStressSyllable")
+            HeadingList.Add("SecondaryStressSyllable")
+            HeadingList.Add("PossiblePoSCount")
+            HeadingList.Add("PossibleLemmaCount")
+
+            For c = 1 To HeadingList.Count
+                ExcelDocument.SetCellValue(1, c, HeadingList(c - 1))
+                ExcelDocument.ApplyNamedCellStyle(1, c, SpreadsheetLight.SLNamedCellStyleValues.Heading4)
+            Next
+
+            For w = 0 To SearchResult.Count - 1
+
+                Dim CurrentWord = SearchResult(w)
+
+                Dim col As Integer = 1
+                ExcelDocument.SetCellValue(w + 2, col, CurrentWord.OrthographicForm)
+                col += 1
+                ExcelDocument.SetCellValue(w + 2, col, CurrentWord.PhoneticForm)
+                col += 1
+                ExcelDocument.SetCellValue(w + 2, col, CurrentWord.PhonotacticType)
+                col += 1
+                ExcelDocument.SetCellValue(w + 2, col, CurrentWord.SyllableCount)
+                col += 1
+                ExcelDocument.SetCellValue(w + 2, col, CurrentWord.PhoneCount)
+                col += 1
+                ExcelDocument.SetCellValue(w + 2, col, CurrentWord.ZipfValue)
+                col += 1
+                ExcelDocument.SetCellValue(w + 2, col, CurrentWord.RawWordTypeFrequency)
+                col += 1
+                ExcelDocument.SetCellValue(w + 2, col, CurrentWord.RawDocumentCount)
+                col += 1
+                ExcelDocument.SetCellValue(w + 2, col, CurrentWord.PLD1WordCount)
+                col += 1
+                ExcelDocument.SetCellValue(w + 2, col, CurrentWord.OLD1WordCount)
+                col += 1
+                ExcelDocument.SetCellValue(w + 2, col, CurrentWord.PNDP)
+                col += 1
+                ExcelDocument.SetCellValue(w + 2, col, CurrentWord.ONDP)
+                col += 1
+                ExcelDocument.SetCellValue(w + 2, col, CurrentWord.GIL2P_OT_Average)
+                col += 1
+                ExcelDocument.SetCellValue(w + 2, col, CurrentWord.GIL2P_OT_Min)
+                col += 1
+                ExcelDocument.SetCellValue(w + 2, col, CurrentWord.PIP2G_OT_Average)
+                col += 1
+                ExcelDocument.SetCellValue(w + 2, col, CurrentWord.PIP2G_OT_Min)
+                col += 1
+                ExcelDocument.SetCellValue(w + 2, col, CurrentWord.G2P_OT_Average)
+                col += 1
+                ExcelDocument.SetCellValue(w + 2, col, CurrentWord.SSPP_Average)
+                col += 1
+                ExcelDocument.SetCellValue(w + 2, col, CurrentWord.SSPP_Min)
+                col += 1
+                ExcelDocument.SetCellValue(w + 2, col, CurrentWord.PSP_Sum)
+                col += 1
+                ExcelDocument.SetCellValue(w + 2, col, CurrentWord.PSBP_Sum)
+                col += 1
+                ExcelDocument.SetCellValue(w + 2, col, CurrentWord.S_PSP_Average)
+                col += 1
+                ExcelDocument.SetCellValue(w + 2, col, CurrentWord.S_PSBP_Average)
+                col += 1
+                ExcelDocument.SetCellValue(w + 2, col, CurrentWord.LetterCount)
+                col += 1
+                ExcelDocument.SetCellValue(w + 2, col, CurrentWord.GraphemeCount)
+                col += 1
+                ExcelDocument.SetCellValue(w + 2, col, CurrentWord.DiGraphCount)
+                col += 1
+                ExcelDocument.SetCellValue(w + 2, col, CurrentWord.TriGraphCount)
+                col += 1
+                ExcelDocument.SetCellValue(w + 2, col, CurrentWord.LongGraphemesCount)
+                col += 1
+                ExcelDocument.SetCellValue(w + 2, col, CurrentWord.SpecialCharacter)
+                col += 1
+                ExcelDocument.SetCellValue(w + 2, col, CurrentWord.UpperCase)
+                col += 1
+                ExcelDocument.SetCellValue(w + 2, col, CurrentWord.ForeignWord)
+                col += 1
+                ExcelDocument.SetCellValue(w + 2, col, CurrentWord.Abbreviation)
+                col += 1
+                ExcelDocument.SetCellValue(w + 2, col, CurrentWord.Acronym)
+                col += 1
+                ExcelDocument.SetCellValue(w + 2, col, CurrentWord.HomographCount)
+                col += 1
+                ExcelDocument.SetCellValue(w + 2, col, CurrentWord.HomophoneCount)
+                col += 1
+                ExcelDocument.SetCellValue(w + 2, col, CurrentWord.NumberOfSenses)
+                col += 1
+                ExcelDocument.SetCellValue(w + 2, col, CurrentWord.ReducedTranscription)
+                col += 1
+                ExcelDocument.SetCellValue(w + 2, col, CurrentWord.Sonographs)
+                col += 1
+                ExcelDocument.SetCellValue(w + 2, col, CurrentWord.Homographs)
+                col += 1
+                ExcelDocument.SetCellValue(w + 2, col, CurrentWord.Homophones)
+                col += 1
+                ExcelDocument.SetCellValue(w + 2, col, CurrentWord.AllPoS)
+                col += 1
+                ExcelDocument.SetCellValue(w + 2, col, CurrentWord.AllLemmas)
+                col += 1
+                ExcelDocument.SetCellValue(w + 2, col, CurrentWord.Tone)
+                col += 1
+                ExcelDocument.SetCellValue(w + 2, col, CurrentWord.MainStressSyllable)
+                col += 1
+                ExcelDocument.SetCellValue(w + 2, col, CurrentWord.SecondaryStressSyllable)
+                col += 1
+                ExcelDocument.SetCellValue(w + 2, col, CurrentWord.PossiblePoSCount)
+                col += 1
+                ExcelDocument.SetCellValue(w + 2, col, CurrentWord.PossibleLemmaCount)
+
+            Next
+
+            'Selecting the first worksheet
+            Dim WorksheetNames = ExcelDocument.GetWorksheetNames()
+            If WorksheetNames.Count > 0 Then
+                ExcelDocument.SelectWorksheet(WorksheetNames(0))
+            End If
+
+            'Saving the excel document to a byte array, which is returned
+            Dim OutputStream As New IO.MemoryStream
+            ExcelDocument.SaveAs(OutputStream)
+            Dim ByteArray = OutputStream.ToArray()
+            Return ByteArray
+
+        Catch ex As Exception
+
+            'Returns an empty array to signal that something went wrong!
+            'Error information could be stored and retrieved from a public object somehow.
+
+            FatalErrors = ex.ToString
+
+            Dim ByteArray() As Byte = {}
+            Return ByteArray
+
+        End Try
+
+
+    End Function
+
 
 End Module
