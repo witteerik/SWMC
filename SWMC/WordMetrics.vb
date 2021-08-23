@@ -1212,6 +1212,118 @@ Public Module AfcListSearch
 
     End Function
 
+    ''' <summary>
+    ''' Creates a ready-to-use SQL query based on an array of word spellings, transcriptions and zipf-value limits.
+    ''' </summary>
+    ''' <param name="spellingArray"></param>
+    ''' <param name="transcriptionArray"></param>
+    ''' <param name="ZipfValueAbove"></param>
+    ''' <param name="ZipfValueBelow"></param>
+    ''' <param name="TranscriptionSearchOperator">Possible values, "AND", "OR", or "NOT". Applied to the phonetic transcriptions only.</param>
+    ''' <returns></returns>
+    Public Function CreateSqlQuery(ByVal spellingArray As String(), ByVal transcriptionArray As String(),
+                                   ByVal ZipfValueAbove As Nullable(Of Double), ByVal ZipfValueBelow As Nullable(Of Double),
+                                   ByVal TranscriptionSearchOperator As String) As String
+
+        Dim ZipfValueAboveString As String = ""
+        If (ZipfValueAbove.HasValue) Then
+            ZipfValueAboveString = ZipfValueAbove.ToString()
+            ZipfValueAboveString = ZipfValueAboveString.Trim().Replace(",", ".") ' Replacing commas To dots
+        End If
+
+        Dim ZipfValueBelowString As String = ""
+        If (ZipfValueBelow.HasValue) Then
+            ZipfValueBelowString = ZipfValueBelow.ToString()
+            ZipfValueBelowString = ZipfValueBelowString.Trim().Replace(",", ".") ' Replacing commas To dots
+        End If
+
+
+        Dim InputOrthographicForm As String = ""
+        Dim InputPhoneticForm As String = ""
+
+        ' Splitting into several spellings And transcriptions
+        Dim spellingList As New List(Of String)
+        Dim transcriptionList As New List(Of String)
+
+        For Each s As String In spellingArray
+            If s.Trim() <> "" Then
+                spellingList.Add("OrthographicForm LIKE '" + s.Trim() + "'")
+            End If
+        Next
+
+        For Each s As String In transcriptionArray
+            If s.Trim() <> "" Then
+                transcriptionList.Add("PhoneticForm LIKE '" + s.Trim() + "'")
+            End If
+        Next
+
+        If spellingList.Count > 0 Then
+            If spellingList.Count = 1 Then
+                InputOrthographicForm = " " + spellingList(0) + " "
+            Else
+                InputOrthographicForm = " (" + String.Join(" OR ", spellingList) + ") "
+            End If
+        End If
+
+        If transcriptionList.Count > 0 Then
+            If transcriptionList.Count = 1 Then
+                InputPhoneticForm = " " + transcriptionList(0) + " "
+            Else
+                InputPhoneticForm = " (" + String.Join(" OR ", transcriptionList) + ") "
+            End If
+        End If
+
+        Dim Query As String = ""
+
+        If InputOrthographicForm = "" And InputPhoneticForm = "" And ZipfValueAboveString = "" And ZipfValueBelowString = "" Then
+            Query = "SELECT * FROM " + "AfcList"
+        Else
+
+            Query = "SELECT * FROM " + "AfcList" + " WHERE"
+
+            Dim AddOperator As Boolean = False
+
+            If InputOrthographicForm <> "" Then
+                Query += InputOrthographicForm
+                AddOperator = True
+            End If
+
+            If ZipfValueAboveString <> "" Then
+                If AddOperator = True Then Query += " AND "
+                Query += " ZipfValue " + "> " + ZipfValueAboveString + ""
+                AddOperator = True
+            End If
+
+            If ZipfValueBelowString <> "" Then
+                If AddOperator = True Then Query += " AND "
+                Query += " ZipfValue " + "< " + ZipfValueBelowString + ""
+                AddOperator = True
+            End If
+
+            If InputPhoneticForm <> "" Then
+                If TranscriptionSearchOperator.Trim = "NOT" Then
+                    If AddOperator = True Then
+                        Query += " AND " + TranscriptionSearchOperator + " "
+                    Else
+                        Query += " " + TranscriptionSearchOperator + " "
+                    End If
+                Else
+                    If AddOperator = True Then Query += " " + TranscriptionSearchOperator + " "
+                End If
+                Query += InputPhoneticForm
+                AddOperator = True
+            End If
+
+            ' Replacing any double spaces in the query string (lacy method..., could be fixed above...)
+            Query = Query.Replace("  ", " ")
+
+        End If
+
+
+        Return Query
+
+    End Function
+
 
     Public Function CreateExcelFile(ByVal SearchResult As List(Of TextOnlyWord), ByVal SearchErrors As String, ByVal SqlQuery As String, ByVal IndexOfFirstHit As Integer, ByVal TotalNumberOfHits As Integer, ByRef FatalErrors As String) As Byte()
 
@@ -1224,14 +1336,18 @@ Public Module AfcListSearch
             'Storing the output data in an Excel document using SpreadsheetLight
             'Adding calculation errors to the first sheet
             Dim ExcelDocument = New SpreadsheetLight.SLDocument()
-            ExcelDocument.RenameWorksheet(SpreadsheetLight.SLDocument.DefaultFirstSheetName, "Search details")
+            ExcelDocument.RenameWorksheet(SpreadsheetLight.SLDocument.DefaultFirstSheetName, " Search details")
 
             ExcelDocument.ApplyNamedCellStyle(1, 1, SpreadsheetLight.SLNamedCellStyleValues.Heading4)
-            ExcelDocument.SetCellValue(1, 1, "Search Details:")
+            ExcelDocument.SetCellValue(1, 1, " Search Details:")
             ExcelDocument.SetCellValue(2, 1, " (You'll find the results in the next worksheet.)")
 
             ExcelDocument.SetCellValue(4, 1, "SQL-questy used: ")
-            ExcelDocument.SetCellValue(4, 2, SqlQuery)
+            Try
+                ExcelDocument.SetCellValue(4, 2, SqlQuery)
+            Catch ex As Exception
+                ExcelDocument.SetCellValue(4, 2, "Unable to write the SQL query, a possible reason is that it was too long.")
+            End Try
 
             ExcelDocument.SetCellValue(5, 1, "Downloaded " & SearchResult.Count & " of " & TotalNumberOfHits & " hits.")
 
@@ -1405,29 +1521,29 @@ Public Module AfcListSearch
 
             Next
 
-            'Selecting the first worksheet
-            Dim WorksheetNames = ExcelDocument.GetWorksheetNames()
-            If WorksheetNames.Count > 0 Then
-                ExcelDocument.SelectWorksheet(WorksheetNames(0))
-            End If
+                'Selecting the first worksheet
+                Dim WorksheetNames = ExcelDocument.GetWorksheetNames()
+                If WorksheetNames.Count > 0 Then
+                    ExcelDocument.SelectWorksheet(WorksheetNames(0))
+                End If
 
-            'Saving the excel document to a byte array, which is returned
-            Dim OutputStream As New IO.MemoryStream
-            ExcelDocument.SaveAs(OutputStream)
-            Dim ByteArray = OutputStream.ToArray()
-            Return ByteArray
+                'Saving the excel document to a byte array, which is returned
+                Dim OutputStream As New IO.MemoryStream
+                ExcelDocument.SaveAs(OutputStream)
+                Dim ByteArray = OutputStream.ToArray()
+                Return ByteArray
 
-        Catch ex As Exception
+                Catch ex As Exception
 
-            'Returns an empty array to signal that something went wrong!
-            'Error information could be stored and retrieved from a public object somehow.
+                'Returns an empty array to signal that something went wrong!
+                'Error information could be stored and retrieved from a public object somehow.
 
-            FatalErrors = ex.ToString
+                FatalErrors = ex.ToString
 
-            Dim ByteArray() As Byte = {}
-            Return ByteArray
+                Dim ByteArray() As Byte = {}
+                Return ByteArray
 
-        End Try
+                End Try
 
 
     End Function

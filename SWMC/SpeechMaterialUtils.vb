@@ -35,7 +35,7 @@ Public Module AfcListMySqlDatabaseInfo
     ''' Call this method to create an AfcListMySqlConnectionString from a .txt file containing the database connection information
     ''' </summary>
     ''' <param name="DatabaseInfoFilePath"></param>
-    Public Function LoadAfcListMySqlDatabaseInfo(ByVal DatabaseInfoFilePath As String) As String
+    Public Function LoadAfcListMySqlDatabaseInfo(ByVal DatabaseInfoFilePath As String, Optional ByVal DefaultCommandTimeout As String = "") As String
 
         Dim InputData() As String = System.IO.File.ReadAllLines(DatabaseInfoFilePath, Text.Encoding.UTF8)
 
@@ -65,7 +65,11 @@ Public Module AfcListMySqlDatabaseInfo
 
         'AfcListMySqlConnectionString = "server=" + mysql_host + ";uid=" + mysql_user + ";pwd=" + mysql_password + ";database=" + mysql_database + ";"
 
-        AfcListMySqlConnectionString = "server=" + mysql_host + ";uid=" + mysql_user + ";pwd=" + mysql_password + ";database=" + mysql_database + "; Character Set=utf8" & ";"
+        If DefaultCommandTimeout = "" Then
+            AfcListMySqlConnectionString = "server=" + mysql_host + ";uid=" + mysql_user + ";pwd=" + mysql_password + ";database=" + mysql_database + "; Character Set=utf8" & ";"
+        Else
+            AfcListMySqlConnectionString = "server=" + mysql_host + ";uid=" + mysql_user + ";pwd=" + mysql_password + ";database=" + mysql_database + "; default command timeout=" + DefaultCommandTimeout + "; Character Set=utf8" & ";"
+        End If
 
         Return AfcListMySqlConnectionString
 
@@ -82,8 +86,10 @@ Public Module AfcListMySqlDatabaseInfo
         Dim mysql_pwd As String = "hJe37s20Vb"
         Dim mysql_database As String = "swedishwordmetrics_com_db_1"
 
+        Dim DefaultCommandTimeout As String = "900" ' 15 minutes
+
         'Set the global variable AfcListMySqlConnectionString to prepares for server connection
-        AfcListMySqlConnectionString = "server=" + mysql_server + ";uid=" + mysql_uid + ";pwd=" + mysql_pwd + ";database=" + mysql_database + "; Character Set=utf8" & ";"
+        AfcListMySqlConnectionString = "server=" + mysql_server + ";uid=" + mysql_uid + ";pwd=" + mysql_pwd + ";database=" + mysql_database + "; default command timeout=" + DefaultCommandTimeout + "; Character Set=utf8" & ";"
 
         Return AfcListMySqlConnectionString
 
