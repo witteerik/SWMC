@@ -719,6 +719,10 @@ Public Class WordMetricsCalculation
             End Try
         End If
 
+        'Calculating complex grapheme counts
+        For Each CurrentWord In InputWordGroup.MemberWords
+            CurrentWord.CountComplexGraphemes()
+        Next
 
         Return True
 
@@ -892,7 +896,12 @@ Public Class WordMetricsCalculation
                                         'Just ignores any erroneous duplicates here
                                     End If
                                 Next
+
+                                'Setting most common PoS
+                                NewWord.MostCommonPoS = NewWord.GetMostCommonPoS
+
                             End If
+
                         End If
                         If IsDBNull(CurrentWordsTable(n)("AllLemmas")) = False Then
 
@@ -921,6 +930,10 @@ Public Class WordMetricsCalculation
                                         'Just ignores any erroneous duplicates here
                                     End If
                                 Next
+
+                                'Setting most common lemma
+                                NewWord.MostCommonLemma = NewWord.GetMostCommonLemma
+
                             End If
                         End If
 
@@ -932,6 +945,19 @@ Public Class WordMetricsCalculation
                         NewWord.Acronym = CurrentWordsTable(n)("Acronym")
                         NewWord.ForeignWord = CurrentWordsTable(n)("ForeignWord")
                         NewWord.ZipfValue_Word = CurrentWordsTable(n)("ZipfValue")
+                        NewWord.LanguageHomographCount = CurrentWordsTable(n)("HomographCount")
+                        NewWord.LanguageHomophoneCount = CurrentWordsTable(n)("HomophoneCount")
+
+                        If IsDBNull(CurrentWordsTable(n)("Homographs")) = False Then
+                            Dim Homographs As String = CurrentWordsTable(n)("Homographs")
+                            NewWord.LanguageHomographs = Homographs.Split("|").ToList
+                        End If
+
+                        If IsDBNull(CurrentWordsTable(n)("Homophones")) = False Then
+                            Dim Homophones As String = CurrentWordsTable(n)("Homophones")
+                            NewWord.LanguageHomophones = Homophones.Split("|").ToList
+                        End If
+
 
                         'Acctually some AFC-list columns are not read here. However, that data is (or could be) generated from the columns read.
 
@@ -977,7 +1003,7 @@ Public Class WordMetricsCalculation
 
         'The following section to look up homophones and homographs is skipped.
         'TODO should we activate it again?
-        Exit Sub
+        'Exit Sub
 
         Dim AfcListConnection = New MySqlConnection(AfcListMySqlConnectionString)
 
@@ -1029,6 +1055,10 @@ Public Class WordMetricsCalculation
                 For n = 0 To CurrentWordsTable.Rows.Count - 1
                     If CurrentWordsTable(n)("ReducedTranscription") <> ReducedTranscription Then
 
+                        If InputWordGroup.MemberWords(word).LanguageHomographs Is Nothing Then
+                            InputWordGroup.MemberWords(word).LanguageHomographs = New List(Of String)
+                        End If
+
                         'Adding the homograph
                         InputWordGroup.MemberWords(word).LanguageHomographs.Add(CurrentWordsTable(n)("ReducedTranscription"))
 
@@ -1052,6 +1082,10 @@ Public Class WordMetricsCalculation
             If CurrentWordsTable.Rows.Count > 0 Then
                 For n = 0 To CurrentWordsTable.Rows.Count - 1
                     If CurrentWordsTable(n)("OrthographicForm") <> InputWordGroup.MemberWords(word).OrthographicForm Then
+
+                        If InputWordGroup.MemberWords(word).LanguageHomophones Is Nothing Then
+                            InputWordGroup.MemberWords(word).LanguageHomophones = New List(Of String)
+                        End If
 
                         'Adding the homophone
                         InputWordGroup.MemberWords(word).LanguageHomophones.Add(CurrentWordsTable(n)("OrthographicForm"))

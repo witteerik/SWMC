@@ -1531,15 +1531,9 @@ Public Class WordGroup
 
             Next
 
-            'Getting the Zipf value sum of the group
-            Dim ZipfSum As Double = 0
-            For LDFrequency = 0 To NeighbourZipfValues.Count - 1
-                ZipfSum += NeighbourZipfValues(LDFrequency)
-            Next
-
             'Calculating density word probability
             If NeighbourZipfValues.Count > 0 Then
-                MemberWords(word).FWPN_DensityProbability = NeighbourZipfValues(0) / ZipfSum
+                MemberWords(word).FWPN_DensityProbability = NeighbourZipfValues(0) / NeighbourZipfValues.Sum
             Else
                 MemberWords(word).FWPN_DensityProbability = 1
             End If
@@ -1594,29 +1588,31 @@ Public Class WordGroup
 
                         Else
                             'The frequency values stored in the transcription are Zipf values. Adding them straight away
-                            NeighbourZipfValues.Add(CurrentNeighbourSplit(1).Trim)
+                            'The line below is a bugfix which should require a more optimal solution. The problem here is that commas are used in OLD1Spellings as both field delimited and decimal mark. 
+                            If CurrentNeighbourSplit.Length > 2 Then
+                                Dim RecombinedDecimalString As String = CurrentNeighbourSplit(1).Trim & "," & CurrentNeighbourSplit(2).Trim
+                                If IsNumeric(RecombinedDecimalString) Then
+                                    NeighbourZipfValues.Add(RecombinedDecimalString)
+                                Else
+                                    MsgBox("Error in " & System.Reflection.MethodInfo.GetCurrentMethod.Name & vbCrLf & "Non numeric OLD1-Neighbour frequency value: " & MemberWords(word).OLD1Spellings(NeighbourIndex))
+                                End If
+                            Else
+                                NeighbourZipfValues.Add(CurrentNeighbourSplit(1).Trim)
+                            End If
                         End If
 
                     Else
-                        MsgBox("Error in " & System.Reflection.MethodInfo.GetCurrentMethod.Name & vbCrLf &
-                               "Non numeric OLD1-Neighbour frequency value: " & MemberWords(word).OLD1Spellings(NeighbourIndex))
+                        MsgBox("Error in " & System.Reflection.MethodInfo.GetCurrentMethod.Name & vbCrLf & "Non numeric OLD1-Neighbour frequency value: " & MemberWords(word).OLD1Spellings(NeighbourIndex))
                     End If
                 Else
-                    MsgBox("Error in " & System.Reflection.MethodInfo.GetCurrentMethod.Name & vbCrLf &
-                               "OLD1-Neighbour without word frequency data. " & MemberWords(word).OLD1Spellings(NeighbourIndex))
+                    MsgBox("Error in " & System.Reflection.MethodInfo.GetCurrentMethod.Name & vbCrLf & "OLD1-Neighbour without word frequency data. " & MemberWords(word).OLD1Spellings(NeighbourIndex))
                 End If
 
             Next
 
-            'Getting the Zipf value sum of the group
-            Dim ZipfSum As Double = 0
-            For LDFrequency = 0 To NeighbourZipfValues.Count - 1
-                ZipfSum += NeighbourZipfValues(LDFrequency)
-            Next
-
             'Calculating density word probability
             If NeighbourZipfValues.Count > 0 Then
-                MemberWords(word).FWON_DensityProbability = NeighbourZipfValues(0) / ZipfSum
+                MemberWords(word).FWON_DensityProbability = NeighbourZipfValues(0) / NeighbourZipfValues.sum
             Else
                 MemberWords(word).FWON_DensityProbability = 1
             End If
@@ -2086,9 +2082,9 @@ Public Class WordGroup
                     Dim CurrentLD As Integer = LevenshteinDistance(ComparisonWord.Key, CurrentWord.OrthographicForm)
 
                     'Storing OLD1 data
-                    If CurrentLD < 2 Then
+                    If CurrentLD = 1 Then
                         CurrentWord.OLD1Spellings.Add(String.Concat(ComparisonWord.Key) & "," & ComparisonWord.Value)
-                        'Comma is used instead of colon since is a part of some spellings.)
+                        'Comma is used instead of colon since colon is a part of some spellings.)
                         'N.B. This function exports Zipf-scale value, instead of the raw word frequency value in the AFC-list column OLD1Spellings! The reason is that the comparison corpus contains Zipf scale values.
                     End If
 
@@ -2117,9 +2113,8 @@ Public Class WordGroup
                     End If
                 Next
 
-                'Removing the OLD1Spellings of the current word if only the source word was detected
-                If CurrentWord.OLD1Spellings.Count = 1 Then CurrentWord.OLD1Spellings = New List(Of String)
-
+                'Adding the value of the current MemberWord to it's own OLD1Spellings at index 0, only if the word has at least one neighbor.
+                If CurrentWord.OLD1Spellings.Count > 0 Then CurrentWord.OLD1Spellings.Insert(0, CurrentWord.OrthographicForm & "," & CurrentWord.ZipfValue_Word)
 
                 If CalculateOLDx = True Then
                     'Summing OLDx values 
@@ -7987,18 +7982,7 @@ Public Class Word
                     Next
 
                     'Setting most common PoS
-                    If newWord.AllPossiblePoS.Count > 0 Then
-                        'newWord.MostCommonPoS = New StringDoubleCombination
-                        Dim HigestPoSValue As Double = 0
-                        Dim HigestPoSIndex As Integer = 0
-                        For PoSIndex = 0 To newWord.AllPossiblePoS.Count - 1
-                            If newWord.AllPossiblePoS(PoSIndex).Item2 > HigestPoSValue Then
-                                HigestPoSValue = newWord.AllPossiblePoS(PoSIndex).Item2
-                                HigestPoSIndex = PoSIndex
-                            End If
-                        Next
-                        newWord.MostCommonPoS = newWord.AllPossiblePoS(HigestPoSIndex)
-                    End If
+                    newWord.MostCommonPoS = newWord.GetMostCommonPoS
                 End If
             End If
 
@@ -8029,18 +8013,8 @@ Public Class Word
                     Next
 
                     'Setting most common lemma
-                    If newWord.AllOccurringLemmas.Count > 0 Then
-                        'newWord.MostCommonLemma = New StringDoubleCombination
-                        Dim HigestLemmaValue As Double = 0
-                        Dim HigestLemmaIndex As Integer = 0
-                        For LemmaIndex = 0 To newWord.AllOccurringLemmas.Count - 1
-                            If newWord.AllOccurringLemmas(LemmaIndex).Item2 > HigestLemmaValue Then
-                                HigestLemmaValue = newWord.AllOccurringLemmas(LemmaIndex).Item2
-                                HigestLemmaIndex = LemmaIndex
-                            End If
-                        Next
-                        newWord.MostCommonLemma = newWord.AllOccurringLemmas(HigestLemmaIndex)
-                    End If
+                    newWord.MostCommonLemma = newWord.GetMostCommonLemma
+
                 End If
             End If
 
@@ -8346,6 +8320,46 @@ Public Class Word
     End Function
 
 
+    Public Function GetMostCommonPoS() As Tuple(Of String, Double)
+
+        If AllPossiblePoS.Count > 0 Then
+            Dim HigestPoSValue As Double = 0
+            Dim HigestPoSIndex As Integer = 0
+            For PoSIndex = 0 To AllPossiblePoS.Count - 1
+                If AllPossiblePoS(PoSIndex).Item2 > HigestPoSValue Then
+                    HigestPoSValue = AllPossiblePoS(PoSIndex).Item2
+                    HigestPoSIndex = PoSIndex
+                End If
+            Next
+            Return AllPossiblePoS(HigestPoSIndex)
+        Else
+            Return Nothing
+        End If
+
+    End Function
+
+    Public Function GetMostCommonLemma() As Tuple(Of String, Double)
+
+        If AllOccurringLemmas.Count > 0 Then
+            Dim HigestLemmaValue As Double = 0
+            Dim HigestLemmaIndex As Integer = 0
+            For LemmaIndex = 0 To AllOccurringLemmas.Count - 1
+                If AllOccurringLemmas(LemmaIndex).Item2 > HigestLemmaValue Then
+                    HigestLemmaValue = AllOccurringLemmas(LemmaIndex).Item2
+                    HigestLemmaIndex = LemmaIndex
+                End If
+            Next
+            Return AllOccurringLemmas(HigestLemmaIndex)
+
+        Else
+            Return Nothing
+        End If
+
+    End Function
+
+
+
+
     ''' <summary>
     ''' Parses the stardard IPA phonetic form into a syllable structure in the current word
     ''' </summary>
@@ -8520,7 +8534,7 @@ Public Class Word
 
         'Setting values for the all properties in PropNameList in the new TextOnlyWord
         For Each PropName In PropNameList
-            GetType(TextOnlyWord).GetProperty(PropName).SetValue(ReadOnlyWord, GetTextOnlyWordValue(PropName, CurrentPhoneCount))
+            GetType(TextOnlyWord).GetProperty(PropName).SetValue(ReadOnlyWord, GetTextOnlyWordValue(PropName, CurrentPhoneCount,,, True))
         Next
 
         Return ReadOnlyWord
@@ -9574,18 +9588,8 @@ Public Class TextOnlyWord
             Next
 
             'Setting most common PoS
-            If newWord.AllPossiblePoS.Count > 0 Then
-                'newWord.MostCommonPoS = New StringDoubleCombination
-                Dim HigestPoSValue As Double = 0
-                Dim HigestPoSIndex As Integer = 0
-                For PoSIndex = 0 To newWord.AllPossiblePoS.Count - 1
-                    If newWord.AllPossiblePoS(PoSIndex).Item2 > HigestPoSValue Then
-                        HigestPoSValue = newWord.AllPossiblePoS(PoSIndex).Item2
-                        HigestPoSIndex = PoSIndex
-                    End If
-                Next
-                newWord.MostCommonPoS = newWord.AllPossiblePoS(HigestPoSIndex)
-            End If
+            newWord.MostCommonPoS = newWord.GetMostCommonPoS
+
         End If
 
         ' AllLemmas
@@ -9612,18 +9616,8 @@ Public Class TextOnlyWord
             Next
 
             'Setting most common lemma
-            If newWord.AllOccurringLemmas.Count > 0 Then
-                'newWord.MostCommonLemma = New StringDoubleCombination
-                Dim HigestLemmaValue As Double = 0
-                Dim HigestLemmaIndex As Integer = 0
-                For LemmaIndex = 0 To newWord.AllOccurringLemmas.Count - 1
-                    If newWord.AllOccurringLemmas(LemmaIndex).Item2 > HigestLemmaValue Then
-                        HigestLemmaValue = newWord.AllOccurringLemmas(LemmaIndex).Item2
-                        HigestLemmaIndex = LemmaIndex
-                    End If
-                Next
-                newWord.MostCommonLemma = newWord.AllOccurringLemmas(HigestLemmaIndex)
-            End If
+            newWord.MostCommonLemma = newWord.GetMostCommonLemma
+
         End If
 
         ' NumberOfSenses
